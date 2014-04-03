@@ -93,7 +93,7 @@ describe("Database API - Class", function () {
           status: 'ACTIVE'
         })
         .then(function (user) {
-          user['@rid'].position.should.be.above(-1);
+          user['@rid'].should.equal('#5:3');
           done();
         }, done).done();
       });

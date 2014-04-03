@@ -17,10 +17,7 @@ describe("Database API - Record", function () {
       this.db.record.get('#5:0')
       .then(function (record) {
         record['@class'].should.equal('OUser');
-        record['@rid'].should.have.properties({
-          cluster: 5,
-          position: 0
-        });
+        record['@rid'].should.equal('#5:0');
         done();
       }, done).done();
     });
@@ -33,10 +30,7 @@ describe("Database API - Record", function () {
       })
       .then(function (record) {
         record['@class'].should.equal('OUser');
-        record['@rid'].should.have.properties({
-          cluster: 5,
-          position: 0
-        });
+        record['@rid'].should.equal('#5:0');
         record.roles.length.should.be.above(0);
         record.roles[0]['@class'].should.equal('ORole');
         done();

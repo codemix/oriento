@@ -17,7 +17,7 @@ describe("Database API - Vertex", function () {
       return this.db.vertex.create('V')
       .bind(this)
       .then(function (vertex) {
-        vertex['@rid'].should.be.an.instanceOf(LIB.RID);
+        vertex['@rid'].should.be.an.instanceOf(String);
         this.created1 = vertex;
         done();
       }, done)
@@ -31,7 +31,7 @@ describe("Database API - Vertex", function () {
       })
       .bind(this)
       .then(function (vertex) {
-        vertex['@rid'].should.be.an.instanceOf(LIB.RID);
+        vertex['@rid'].should.be.an.instanceOf(String);
         vertex.key1.should.equal('val1');
         vertex.key2.should.equal('val2');
         this.created2 = vertex;
