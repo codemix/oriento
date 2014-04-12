@@ -45,7 +45,7 @@ var server = new Oriento({
 
 server.method().then(resultMethod).error(errorMethod);
 
-// **Example:**
+// _Example:_
 server.method()
   .then(function(results) {
     console.log('Success with results.');
@@ -78,27 +78,36 @@ server.method()
 //
 // > Note: there is no need to call `connect()`, the
 // > connection is established the first time it is needed.
+server.list();
+
+// **Response:**
+// - **list** _(Object)_ - A list of database objects.
+//   - **Database** _(Object)_ - Database objects.
+//
+// **Example**
 server.list()
   .then(function(list) {
     console.log('Databases: ', list);
   });
 
-// Response:
-// - **list** _(Object)_ - A list of database objects.
 
 
 // ### Exists
 // Check whether a database exists.
-server.exists(name)
+server.exists(name);
+
+// **Parameters:**
+// - **name** _(String)_ - Database name.
+//
+// **Response:**
+// - **results** _(Boolean)_ - If database exists, returns true. Otherwise false.
+
+// **Example**
+server.exists('mydb')
   .then(function(results) {
     console.log('Database exists: ', results);
   });
 
-// Parameters:
-// - **name** _(String)_ - Database name.
-//
-// Response:
-// - **results** _(Boolean)_ - If database exists, returns true. Otherwise false.
 
 
 // ## Configuration
@@ -110,44 +119,54 @@ server.exists(name)
 
 // ### List
 // Get list of parameters set in the configuration.
+server.config.list();
+
+// **Response:**
+// - **list** _(Object)_ - List of parameters.
+//  - **object** _(Object)_ - Config parameter object.
+//    - **name** _(String)_ - Parameters key.
+//    - **value** _(String)_ - Parameter value.
+//
+// **Example**
 server.config.list()
   .then(function(list) {
     console.log('List of the configuration properties: ' + list);
   });
 
-// Response:
-// - **list** _(Object)_ - List of parameters.
-//  - **name** _(String)_ - Parameters key.
-//  - **value** _(String)_ - Parameter value.
-
 
 // ### Get
 // Get configuration parameters
-server.config.get(key)
-  .then(function(value) {
-    console.log('Config param, ' + key + ' = ' + value);
-  });
-
-// Parameters:
+server.config.get(key);
+// **Parameters:**
 // - **key** _(String)_ - Property key.
 //
-// Response:
+// **Response:**
 // - **value** _(String)_ - Value of property.
+//
+// _Example:_
+server.config.get('db.pool.max')
+  .then(function(value) {
+    console.log('Config param, db.pool.max = ' + value);
+  });
+
 
 
 // ### Set
 // Set a configuration parameter
-server.config.set(key, value)
-  .then(function(results) {
-    console.log('Config param, ' + key + ' updated? ', results);
-  });
-
+server.config.set(key, value);
 // Parameters:
 // - **key** _(String)_ - Property key.
 // - **value** _(String)_ - Value of property.
 //
 // Response:
 // - **results** _(Boolean)_ - If property was set successfully, return true. Otherwise false.
+//
+// _Example:_
+server.config.set('db.pool.max', 10)
+  .then(function(results) {
+    console.log('Config param, db.pool.max updated? ', results);
+  });
+
 
 
 
@@ -173,10 +192,29 @@ server.config.set(key, value)
 
 // ### Open
 // Using an existing database
+server.use(name);
+// Parameters:
+// - **name** _(String)_ - Database name.
+//
+// Response:
+// - **database** _(Object)_ - Database object.
+//
+// _Example:_
 var db = server.use('mydb');
 console.log('Using database: ' + db.name);
 
 // Using an existing database with credentials
+server.use(config);
+// Parameters:
+// - **name||config** _(String|Object)_ - Database name or configuration.
+//   - **name** _(String)_ - Database name.
+//   - **username** _(String)_ - Authentication username.
+//   - **password** _(String)_ - Authentication password.
+//
+// Response:
+// - **Database** _(Object)_ - Database object.
+//
+// _Example:_
 var db = server.use({
   name: 'mydb',
   username: 'admin',
@@ -187,6 +225,17 @@ console.log('Using database: ' + db.name);
 
 // ### Add
 // Creating a new database in the OrientDB server instance.
+server.create(config);
+// Parameters:
+// - **config** _(Object)_ - Database configuration.
+//   - **name** _(String)_ - Name of the database. _Required_.
+//   - **type** _(String)_ - Type of database. Options: document or graph. Default: "document".
+//   - **storage** _(String)_ - Storage type. Options: plocal, local, memory. Default: "plocal".
+//
+// Response:
+// - **Database** _(Object)_ - Database object.
+//
+// _Example:_
 server.create({
     name: 'mydb',
     type: 'graph',
@@ -196,27 +245,10 @@ server.create({
     console.log('Created a database called ' + db.name);
   });
 
-// Parameters:
-// - **config** _(Object)_ - Database configuration.
-//   - **name** _(String)_ - Name of the database. _Required_.
-//   - **type** _(String)_ - Type of database. Options: document or graph. Default: "document".
-//   - **storage** _(String)_ - Storage type. Options: plocal, local, memory. Default: "plocal".
-//
-// Response:
-// - **Database** _(Object)_ - A database object.
-
 
 // ### Delete
-// Removes a database from the OrientDB Server instance..
-server.delete({
-  name: 'mydb',
-  type: 'graph',
-  storage: 'plocal'
-})
-  .then(function(results) {
-    console.log('Delete a database: ' + db.name);
-  });
-
+// Removes a database from the OrientDB Server instance.
+server.delete(config);
 // Parameters:
 // - **config** _(Object)_ - Database configuration.
 //   - **name** _(String)_ - Name of the database. _Required_.
@@ -225,34 +257,80 @@ server.delete({
 //
 // Response:
 // - **results** _(Boolean)_ - If database exists, returns true. Otherwise false.
+//
+// _Example:_
+server.delete({
+    name: 'mydb',
+    type: 'graph',
+    storage: 'plocal'
+  })
+  .then(function(results) {
+    console.log('Delete a database: ' + results);
+  });
+
 
 
 // ## Classes
 
-// ### Get
-// Getting an existing class
-db.class.get('MyClass')
-  .then(function (MyClass) {
-    console.log('Got class: ' + MyClass.name);
-  });
-
 // ### List
 // Listing all the classes in the database
+db.class.list();
+//
+// **Response:**
+// - **list** _(Array)_ - List of class objects.
+//
+// _Example:_
 db.class.list()
-  .then(function (classes) {
+  .then(function(classes) {
     console.log('There are ' + classes.length + ' classes in the db:', classes);
   });
 
+// ### Get
+// Getting an existing class
+db.class.get(name);
+//
+// **Parameters:**
+// - **name** _(String)_ - Class name.
+//
+// **Response:**
+// - **class** _(Object)_ - Class object.
+//
+// _Example:_
+db.class.get('MyClass')
+  .then(function(MyClass) {
+    console.log('Got class: ' + MyClass.name);
+  });
+
+
 // ### Add
 // Creating a new class
+db.class.create(name);
+//
+// **Parameters:**
+// - **name** _(String)_ - New class name.
+//
+// **Response:**
+// - **class** _(Object)_ - Class object.
+//
+// _Example:_
 db.class.create('MyClass')
-  .then(function (MyClass) {
+  .then(function(MyClass) {
     console.log('Created class: ' + MyClass.name);
   });
 
 // Creating a new class that extends another
+db.class.create(name, extends);
+//
+// **Parameters:**
+// - **name** _(String)_ - New class name.
+// - **extends** _(String)_ - Class name to extend.
+//
+// **Response:**
+// - **class** _(Object)_ - Class object.
+//
+// _Example:_
 db.class.create('MyOtherClass', 'MyClass')
-  .then(function (MyOtherClass) {
+  .then(function(MyOtherClass) {
     console.log('Created class: ' + MyOtherClass.name);
   });
 
@@ -261,30 +339,110 @@ db.class.create('MyOtherClass', 'MyClass')
 
 // #### List
 // Listing properties in a class
+Class.property.list();
+//
+// **Response:**
+// - **list** _(Array)_ - List of properties.
+//
+// _Example:_
 MyClass.property.list()
-  .then(function (properties) {
+  .then(function(properties) {
     console.log('The class has the following properties:', properties);
   });
 
 // #### Add
-// Adding a property to a class
+// Adding a property to a class.
+Class.property.create(config);
+//
+// **Parameters:**
+// - **config** _(Object)_ - Property name and value.
+//
+// **Response:**
+// - **results** _(Boolean)_ - If property was deleted, returns true. Otherwise false.
+//
+// _Example:_
 MyClass.property.create({
-  name: 'name',
+    name: 'name',
     type: 'String'
   })
-  .then(function () {
-    console.log('Property created.')
+  .then(function() {
+    console.log('Property created.');
   });
 
 // #### Delete
 // Deleting a property from a class
+Class.property.delete(name);
+//
+// **Parameters:**
+// - **name** _(String)_ - Property name to delete.
+//
+// **Response:**
+// - **results** _(Boolean)_ - If property was deleted, returns true. Otherwise false.
+//
+// _Example:_
 MyClass.property.delete('myprop')
-  .then(function () {
+  .then(function() {
     console.log('Property deleted.');
   });
 
+
+
+// ## Records
+
+// ### List Records
+// Listing records in a class
+Class.list();
+//
+// **Response:**
+// - **list** _(Array)_ - List of record objects.
+//
+// _Example:_
+MyClass.list()
+  .then(function(records) {
+    console.log('Found ' + records.length + ' records:', records);
+  });
+
+// ### Get
+// Loading a record by RID.
+db.record.get(recordId);
+//
+// **Parameters:**
+// - **recordId** _(String)_ - Record id of record to retrieve.
+//
+// **Response:**
+// - **record** _(Object)_ - Record object.
+//
+// _Example:_
+db.record.get('#1:1')
+  .then(function(record) {
+    console.log('Loaded record:', record);
+  });
+
 // ### Add Record
-// Creating a record for a class
+// Create a new record.
+db.record.create(properties);
+//
+// **Parameters:**
+// - **properties** _(Object)_ - Record properties to set.
+//
+// **Response:**
+// - **record** _(Object|Array)_ - Updated record(s).
+//
+// _Example:_
+db.record.create({
+    '@class': 'OUser',
+    name: 'testuser',
+    password: 'testpassword',
+    status: 'ACTIVE'
+  })
+  .then(function (record) {
+    console.log('Created record:', record);
+  });
+
+// Creating a record for a class.
+Class.create(properties);
+//
+// _Example:_
 MyClass.create({
     name: 'John McFakerton',
     email: 'fake@example.com'
@@ -293,40 +451,69 @@ MyClass.create({
     console.log('Created record: ', record);
   });
 
-// ### List Records
-// Listing records in a class
-MyClass.list()
-  .then(function(records) {
-    console.log('Found ' + records.length + ' records:', records);
+
+// ### Update
+// Modify an existing record.
+db.record.update(properties, options);
+//
+// **Parameters:**
+// - **properties** _(Object)_ - Record properties to set.
+// - **options** _(Object)_ - Update options.
+//
+// **Response:**
+// - **record** _(Object|Array)_ - Updated record(s).
+//
+// _Example:_
+db.record.update({
+    '@rid': createdRID,
+    name: 'testuserrenamed'
+  },
+  {
+    preserve: true
+  })
+  .then(function (record) {
+    record.name.should.equal('testuserrenamed');
   });
 
-
-// ## Records
-
-// ### Get
-// Loading a record by RID.
-db.record.get('#1:1')
-  .then(function(record) {
-    console.log('Loaded record:', record);
-  });
 
 // ### Delete
-// Deleting a record
+// Deleting a record.
+db.record.delete(recordId);
+//
+// **Parameters:**
+// - **recordId** _(String)_ - Record id of record to delete.
+//
+// **Response:**
+// - **results** _(Boolean)_ - If record was deleted, returns true. Otherwise false.
+//
+// _Example:_
 db.record.delete('#1:1')
   .then(function() {
     console.log('Record deleted');
   });
 
+
+
 // ## Vertex
 
 // ### Add
-// Creating a new, empty vertex
+// Creating a new, empty vertex.
+db.vertex.create(name);
+//
+// **Parameters:**
+// - **class|properties** _(String|Object)_ - Vertex class or properties to set.
+//
+// **Response:**
+// - **vertex** _(Object)_ - Vertex created.
+//
+// _Example:_ Creating a new vertex with no properties, just a class name.
 db.vertex.create('V')
   .then(function(vertex) {
     console.log('created vertex', vertex);
   });
 
-// Creating a new vertex with some properties
+//
+// _Example:_ Creating a new vertex with some properties.
 db.vertex.create({
     '@class': 'V',
     key: 'value',
@@ -337,7 +524,16 @@ db.vertex.create({
   });
 
 // ### Delete
-// Deleting a vertex
+// Deleting a vertex.
+db.vertex.delete(recordId);
+//
+// **Parameters:**
+// - **recordId** _(String)_ - Record id of vertex to delete.
+//
+// **Response:**
+// - **count** _(Number)_ - Number of vertices deleted.
+//
+// _Example:_
 db.vertex.delete('#12:12')
   .then(function(count) {
     console.log('deleted ' + count + ' vertices');
@@ -346,7 +542,18 @@ db.vertex.delete('#12:12')
 // ## Edges
 
 // ### Add
-// Creating a simple edge between vertices
+// Creating a simple edge between vertices.
+db.edge.from(originId).to(destId).create(class|properties);
+//
+// **Parameters:**
+// - **originId** _(String)_ - Record id for origin record.
+// - **destId** _(String)_ - Record id for destination record.
+// - **class|properties** _(String|Object)_ - Edge class or properties to set.
+//
+// **Response:**
+// - **edge** _(Object)_ - Created edge.
+//
+// _Example:_
 db.edge.from('#12:12')
   .to('#12:13')
   .create('E')
@@ -354,7 +561,10 @@ db.edge.from('#12:12')
     console.log('created edge:', edge);
   });
 
-// Creating an edge with properties
+// Creating an edge with properties.
+db.edge.from(originId).to(destId).create(properties);
+
+// _Example:_
 db.edge.from('#12:12')
   .to('#12:13')
   .create({
@@ -367,17 +577,47 @@ db.edge.from('#12:12')
   });
 
 // ### Delete
-// Deleting an edge between vertices
+// Deleting an edge between vertices.
+db.edge.from(originId).to(destId).delete();
+//
+// **Parameters:**
+// - **originId** _(String)_ - Record id for origin record.
+// - **destId** _(String)_ - Record id for destination record.
+//
+// **Response:**
+// - **count** _(Number)_ - Number of edges deleted.
+//
+// _Example:_
 db.edge.from('#12:12')
   .to('#12:13')
   .delete()
   .then(function(count) {
-    console.log('deleted ' + count + ' edges');
+    console.log('Deleted ' + count + ' edges');
   });
 
-// ## Query Builder
+// ## Query
+
+// ### SQL
+// Send SQL-like commands to OrientDB.
+db.query(sql);
+//
+// _Example:_
+db.query('SELECT FROM V LIMIT 5')
+  .then(function(results){
+    console.log('Query results: ', results);
+  });
 
 // ### Select
+
+// **One** -
+// Select a single record from the query. Results are returned as an object.
+db.select().from(class).where(params).one();
+
+// **All** -
+// Select all records from a query. Results are returned with an array of record objects.
+db.select().from(class).where(params).all();
+//
+// _Example:_
 db.select()
   .from('OUser')
   .where({status: 'ACTIVE'})
@@ -386,7 +626,16 @@ db.select()
     console.log('active users', users);
   });
 
-// Select Records with Fetch Plan
+// **Limits** -
+// Limit the number of records that are returned.
+db.select().from(class).where(params).limit(limits).all();
+
+// **Fetch Plan** -
+// Select Records with Fetch Plan.
+db.select().from(class).where(params).fetch(plan).all();
+
+//
+// _Example:_
 db.select()
   .from('OUser')
   .where({status: 'ACTIVE'})
@@ -396,7 +645,11 @@ db.select()
     console.log('active users', users);
   });
 
+// **Expressions** -
 // Select an expression
+db.select(expression).from(class).where(params).scalar();
+//
+// _Example:_
 db.select('count(*)')
   .from('OUser')
   .where({status: 'ACTIVE'})
@@ -406,6 +659,9 @@ db.select('count(*)')
   });
 
 // Return a specific column
+db.select(expression).from(class).where(params).column(columnName).all();
+//
+// _Example:_
 db.select('name')
   .from('OUser')
   .where({status: 'ACTIVE'})
@@ -415,7 +671,19 @@ db.select('name')
     console.log('active user names', names.join(', '));
   });
 
-// Transform a field
+// ###Transform
+db.select(expression).from(class).where(params).transform(fields).all();
+//
+// **Parameters:**
+// - **expression** _(String)_ - properties to select.
+// - **class** _(String)_ - Class name.
+// - **params** _(Object)_ - Where params to restrict the selection of results.
+// - **fields** _(Object)_ - Fields to transform results.
+//
+// **Response:**
+// - **list** _(Array)_ - List of record objects.
+//
+// _Example:_ Transform a field
 db.select('name')
   .from('OUser')
   .where({status: 'ACTIVE'})
@@ -430,7 +698,7 @@ db.select('name')
     console.log('user status: ', user.status); // 'active'
   });
 
-// Transform a record
+// _Example:_ Transform a record
 db.select('name')
   .from('OUser')
   .where({status: 'ACTIVE'})
@@ -443,7 +711,20 @@ db.select('name')
     console.log('user is an instance of User?', (user instanceof User)); // true
   });
 
-// Specify default values
+// ### Defaults
+// Specify default values. If results fail to return a value, a default will be used instead.
+db.select(expression).from(class).where(params).defaults(defaults).all();
+//
+// **Parameters:**
+// - **expression** _(String)_ - properties to select.
+// - **class** _(String)_ - Class name.
+// - **params** _(Object)_ - Where params to restrict the selection of results.
+// - **defaults** _(Object)_ - Default values.
+//
+// **Response:**
+// - **list** _(Array)_ - List of record objects.
+//
+// _Example:_
 db.select('name')
   .from('OUser')
   .where({status: 'ACTIVE'})
@@ -457,6 +738,16 @@ db.select('name')
   });
 
 // ### Traverse
+db.traverse().from(class).where(params).all();
+//
+// **Parameters:**
+// - **class** _(String)_ - Class name.
+// - **params** _(Object)_ - Where params to restrict the selection of results.
+//
+// **Response:**
+// - **list** _(Array)_ - List of record objects.
+//
+// _Example:_
 db.traverse()
   .from('OUser')
   .where({name: 'guest'})
@@ -466,6 +757,16 @@ db.traverse()
   });
 
 // ### Insert
+db.insert().into(class).set(properties).one();
+//
+// **Parameters:**
+// - **class** _(String)_ - Class name.
+// - **properties** _(Object)_ - Properties to set.
+//
+// **Response:**
+// - **Record** _(Object)_ - Record object.
+//
+// _Example:_
 db.insert()
   .into('OUser')
   .set({name: 'demo', password: 'demo', status: 'ACTIVE'})
@@ -475,6 +776,17 @@ db.insert()
   });
 
 // ### Update
+db.update(class).set(properties).where(params).scalar();
+//
+// **Parameters:**
+// - **class** _(String)_ - Class name.
+// - **properties** _(Object)_ - Properties to set.
+// - **params** _(Object)_ - Where params to restrict the selection of results.
+//
+// **Response:**
+// - **results** _(Number)_ - Number of records updated.
+//
+// _Example:_
 db.update('OUser')
   .set({password: 'changed'})
   .where({name: 'demo'})
@@ -484,6 +796,17 @@ db.update('OUser')
   });
 
 // ### Delete
+db.delete().from(class).where(params).limit(limits).scalar();
+//
+// **Parameters:**
+// - **class** _(String)_ - Class name.
+// - **params** _(Object)_ - Where params to restrict the selection of results.
+// - **limits** _(String)_ - Maximum number of results to return.
+//
+// **Response:**
+// - **results** _(Boolean)_ - If record is deleted, returns true. Otherwise false.
+//
+// _Example:_
 db.delete()
   .from('OUser')
   .where({name: 'demo'})

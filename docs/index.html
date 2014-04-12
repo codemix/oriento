@@ -40,25 +40,6 @@
         </button>
         <a class="navbar-brand" href="#">Oriento</a>
       </div>
-
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Link</a></li>
-          <li><a href="#">Link</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Separated link</a></li>
-              <li class="divider"></li>
-              <li><a href="#">One more separated link</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div><!-- /.navbar-collapse -->
     </nav>
 
     <div class="container-fluid" style="margin-top:50px;">
@@ -142,7 +123,7 @@ server.method().then(resultMethod).error(errorMethod);</pre></div>
           
           
           
-          <p><strong>Example:</strong></p>
+          <p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>server.method()
@@ -189,6 +170,20 @@ connection is established the first time it is needed.</p>
 </blockquote>
 
           
+          <div class='highlight'><pre>server.list();</pre></div>
+          
+          
+          
+          <p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Object)</em> - A list of database objects.<ul>
+<li><strong>Database</strong> <em>(Object)</em> - Database objects.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Example</strong></p>
+
+          
           <div class='highlight'><pre>server.list()
   .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(list)</span> {</span>
     console.log(<span class="hljs-string">'Databases: '</span>, list);
@@ -196,34 +191,33 @@ connection is established the first time it is needed.</p>
           
           
           
-          <p>Response:</p>
-<ul>
-<li><strong>list</strong> <em>(Object)</em> - A list of database objects.</li>
-</ul>
-
-          
-          
-          
           <h3 id="exists">Exists</h3>
 <p>Check whether a database exists.</p>
 
           
-          <div class='highlight'><pre>server.exists(name)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
-    console.log(<span class="hljs-string">'Database exists: '</span>, results);
-  });</pre></div>
+          <div class='highlight'><pre>server.exists(name);</pre></div>
           
           
           
-          <p>Parameters:</p>
+          <p><strong>Parameters:</strong></p>
 <ul>
 <li><strong>name</strong> <em>(String)</em> - Database name.</li>
 </ul>
-<p>Response:</p>
+<p><strong>Response:</strong></p>
 <ul>
 <li><strong>results</strong> <em>(Boolean)</em> - If database exists, returns true. Otherwise false.</li>
 </ul>
 
+          
+          
+          
+          <p><strong>Example</strong></p>
+
+          
+          <div class='highlight'><pre>server.exists(<span class="hljs-string">'mydb'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+    console.log(<span class="hljs-string">'Database exists: '</span>, results);
+  });</pre></div>
           
           
           
@@ -242,6 +236,24 @@ connection is established the first time it is needed.</p>
 <p>Get list of parameters set in the configuration.</p>
 
           
+          <div class='highlight'><pre>server.config.list();</pre></div>
+          
+          
+          
+          <p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Object)</em> - List of parameters.<ul>
+<li><strong>object</strong> <em>(Object)</em> - Config parameter object.<ul>
+<li><strong>name</strong> <em>(String)</em> - Parameters key.</li>
+<li><strong>value</strong> <em>(String)</em> - Parameter value.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Example</strong></p>
+
+          
           <div class='highlight'><pre>server.config.list()
   .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(list)</span> {</span>
     console.log(<span class="hljs-string">'List of the configuration properties: '</span> + list);
@@ -249,38 +261,29 @@ connection is established the first time it is needed.</p>
           
           
           
-          <p>Response:</p>
-<ul>
-<li><strong>list</strong> <em>(Object)</em> - List of parameters.<ul>
-<li><strong>name</strong> <em>(String)</em> - Parameters key.</li>
-<li><strong>value</strong> <em>(String)</em> - Parameter value.</li>
-</ul>
-</li>
-</ul>
-
-          
-          
-          
           <h3 id="get">Get</h3>
 <p>Get configuration parameters</p>
 
           
-          <div class='highlight'><pre>server.config.get(key)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
-    console.log(<span class="hljs-string">'Config param, '</span> + key + <span class="hljs-string">' = '</span> + value);
-  });</pre></div>
+          <div class='highlight'><pre>server.config.get(key);</pre></div>
           
           
           
-          <p>Parameters:</p>
+          <p><strong>Parameters:</strong></p>
 <ul>
 <li><strong>key</strong> <em>(String)</em> - Property key.</li>
 </ul>
-<p>Response:</p>
+<p><strong>Response:</strong></p>
 <ul>
 <li><strong>value</strong> <em>(String)</em> - Value of property.</li>
 </ul>
+<p><em>Example:</em></p>
 
+          
+          <div class='highlight'><pre>server.config.get(<span class="hljs-string">'db.pool.max'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
+    console.log(<span class="hljs-string">'Config param, db.pool.max = '</span> + value);
+  });</pre></div>
           
           
           
@@ -288,10 +291,7 @@ connection is established the first time it is needed.</p>
 <p>Set a configuration parameter</p>
 
           
-          <div class='highlight'><pre>server.config.set(key, value)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
-    console.log(<span class="hljs-string">'Config param, '</span> + key + <span class="hljs-string">' updated? '</span>, results);
-  });</pre></div>
+          <div class='highlight'><pre>server.config.set(key, value);</pre></div>
           
           
           
@@ -304,7 +304,13 @@ connection is established the first time it is needed.</p>
 <ul>
 <li><strong>results</strong> <em>(Boolean)</em> - If property was set successfully, return true. Otherwise false.</li>
 </ul>
+<p><em>Example:</em></p>
 
+          
+          <div class='highlight'><pre>server.config.set(<span class="hljs-string">'db.pool.max'</span>, <span class="hljs-number">10</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+    console.log(<span class="hljs-string">'Config param, db.pool.max updated? '</span>, results);
+  });</pre></div>
           
           
           
@@ -339,12 +345,47 @@ connection is established the first time it is needed.</p>
 <p>Using an existing database</p>
 
           
+          <div class='highlight'><pre>server.use(name);</pre></div>
+          
+          
+          
+          <p>Parameters:</p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> - Database name.</li>
+</ul>
+<p>Response:</p>
+<ul>
+<li><strong>database</strong> <em>(Object)</em> - Database object.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre><span class="hljs-keyword">var</span> db = server.use(<span class="hljs-string">'mydb'</span>);
 console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre></div>
           
           
           
           <p>Using an existing database with credentials</p>
+
+          
+          <div class='highlight'><pre>server.use(config);</pre></div>
+          
+          
+          
+          <p>Parameters:</p>
+<ul>
+<li><strong>name||config</strong> <em>(String|Object)</em> - Database name or configuration.<ul>
+<li><strong>name</strong> <em>(String)</em> - Database name.</li>
+<li><strong>username</strong> <em>(String)</em> - Authentication username.</li>
+<li><strong>password</strong> <em>(String)</em> - Authentication password.</li>
+</ul>
+</li>
+</ul>
+<p>Response:</p>
+<ul>
+<li><strong>Database</strong> <em>(Object)</em> - Database object.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre><span class="hljs-keyword">var</span> db = server.use({
@@ -360,14 +401,7 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
 <p>Creating a new database in the OrientDB server instance.</p>
 
           
-          <div class='highlight'><pre>server.create({
-    name: <span class="hljs-string">'mydb'</span>,
-    type: <span class="hljs-string">'graph'</span>,
-    storage: <span class="hljs-string">'plocal'</span>
-  })
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(db)</span> {</span>
-    console.log(<span class="hljs-string">'Created a database called '</span> + db.name);
-  });</pre></div>
+          <div class='highlight'><pre>server.create(config);</pre></div>
           
           
           
@@ -382,24 +416,27 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
 </ul>
 <p>Response:</p>
 <ul>
-<li><strong>Database</strong> <em>(Object)</em> - A database object.</li>
+<li><strong>Database</strong> <em>(Object)</em> - Database object.</li>
 </ul>
+<p><em>Example:</em></p>
 
+          
+          <div class='highlight'><pre>server.create({
+    name: <span class="hljs-string">'mydb'</span>,
+    type: <span class="hljs-string">'graph'</span>,
+    storage: <span class="hljs-string">'plocal'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(db)</span> {</span>
+    console.log(<span class="hljs-string">'Created a database called '</span> + db.name);
+  });</pre></div>
           
           
           
           <h3 id="delete">Delete</h3>
-<p>Removes a database from the OrientDB Server instance..</p>
+<p>Removes a database from the OrientDB Server instance.</p>
 
           
-          <div class='highlight'><pre>server.delete({
-  name: <span class="hljs-string">'mydb'</span>,
-  type: <span class="hljs-string">'graph'</span>,
-  storage: <span class="hljs-string">'plocal'</span>
-})
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
-    console.log(<span class="hljs-string">'Delete a database: '</span> + db.name);
-  });</pre></div>
+          <div class='highlight'><pre>server.delete(config);</pre></div>
           
           
           
@@ -416,7 +453,17 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
 <ul>
 <li><strong>results</strong> <em>(Boolean)</em> - If database exists, returns true. Otherwise false.</li>
 </ul>
+<p><em>Example:</em></p>
 
+          
+          <div class='highlight'><pre>server.delete({
+    name: <span class="hljs-string">'mydb'</span>,
+    type: <span class="hljs-string">'graph'</span>,
+    storage: <span class="hljs-string">'plocal'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+    console.log(<span class="hljs-string">'Delete a database: '</span> + results);
+  });</pre></div>
           
           
           
@@ -425,24 +472,50 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <h3 id="get">Get</h3>
-<p>Getting an existing class</p>
-
-          
-          <div class='highlight'><pre>db.class.get(<span class="hljs-string">'MyClass'</span>)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(MyClass)</span> {</span>
-    console.log(<span class="hljs-string">'Got class: '</span> + MyClass.name);
-  });</pre></div>
-          
-          
-          
           <h3 id="list">List</h3>
 <p>Listing all the classes in the database</p>
 
           
+          <div class='highlight'><pre>db.class.list();</pre></div>
+          
+          
+          
+          <p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Array)</em> - List of class objects.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>db.class.list()
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(classes)</span> {</span>
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(classes)</span> {</span>
     console.log(<span class="hljs-string">'There are '</span> + classes.length + <span class="hljs-string">' classes in the db:'</span>, classes);
+  });</pre></div>
+          
+          
+          
+          <h3 id="get">Get</h3>
+<p>Getting an existing class</p>
+
+          
+          <div class='highlight'><pre>db.class.get(name);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> - Class name.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>class</strong> <em>(Object)</em> - Class object.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
+          <div class='highlight'><pre>db.class.get(<span class="hljs-string">'MyClass'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(MyClass)</span> {</span>
+    console.log(<span class="hljs-string">'Got class: '</span> + MyClass.name);
   });</pre></div>
           
           
@@ -451,8 +524,23 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
 <p>Creating a new class</p>
 
           
+          <div class='highlight'><pre>db.class.create(name);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> - New class name.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>class</strong> <em>(Object)</em> - Class object.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>db.class.create(<span class="hljs-string">'MyClass'</span>)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(MyClass)</span> {</span>
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(MyClass)</span> {</span>
     console.log(<span class="hljs-string">'Created class: '</span> + MyClass.name);
   });</pre></div>
           
@@ -461,8 +549,24 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           <p>Creating a new class that extends another</p>
 
           
+          <div class='highlight'><pre>db.class.create(name, extends);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> - New class name.</li>
+<li><strong>extends</strong> <em>(String)</em> - Class name to extend.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>class</strong> <em>(Object)</em> - Class object.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>db.class.create(<span class="hljs-string">'MyOtherClass'</span>, <span class="hljs-string">'MyClass'</span>)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(MyOtherClass)</span> {</span>
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(MyOtherClass)</span> {</span>
     console.log(<span class="hljs-string">'Created class: '</span> + MyOtherClass.name);
   });</pre></div>
           
@@ -477,23 +581,49 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
 <p>Listing properties in a class</p>
 
           
+          <div class='highlight'><pre>Class.property.list();</pre></div>
+          
+          
+          
+          <p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Array)</em> - List of properties.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>MyClass.property.list()
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(properties)</span> {</span>
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(properties)</span> {</span>
     console.log(<span class="hljs-string">'The class has the following properties:'</span>, properties);
   });</pre></div>
           
           
           
           <h4 id="add">Add</h4>
-<p>Adding a property to a class</p>
+<p>Adding a property to a class.</p>
+
+          
+          <div class='highlight'><pre>Class.property.create(config);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>config</strong> <em>(Object)</em> - Property name and value.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>results</strong> <em>(Boolean)</em> - If property was deleted, returns true. Otherwise false.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>MyClass.property.create({
-  name: <span class="hljs-string">'name'</span>,
+    name: <span class="hljs-string">'name'</span>,
     type: <span class="hljs-string">'String'</span>
   })
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-    console.log(<span class="hljs-string">'Property created.'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    console.log(<span class="hljs-string">'Property created.'</span>);
   });</pre></div>
           
           
@@ -502,15 +632,120 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
 <p>Deleting a property from a class</p>
 
           
+          <div class='highlight'><pre>Class.property.delete(name);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> - Property name to delete.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>results</strong> <em>(Boolean)</em> - If property was deleted, returns true. Otherwise false.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>MyClass.property.delete(<span class="hljs-string">'myprop'</span>)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
     console.log(<span class="hljs-string">'Property deleted.'</span>);
   });</pre></div>
           
           
           
+          <h2 id="records">Records</h2>
+
+          
+          
+          
+          <h3 id="list-records">List Records</h3>
+<p>Listing records in a class</p>
+
+          
+          <div class='highlight'><pre>Class.list();</pre></div>
+          
+          
+          
+          <p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Array)</em> - List of record objects.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
+          <div class='highlight'><pre>MyClass.list()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records)</span> {</span>
+    console.log(<span class="hljs-string">'Found '</span> + records.length + <span class="hljs-string">' records:'</span>, records);
+  });</pre></div>
+          
+          
+          
+          <h3 id="get">Get</h3>
+<p>Loading a record by RID.</p>
+
+          
+          <div class='highlight'><pre>db.record.get(recordId);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>recordId</strong> <em>(String)</em> - Record id of record to retrieve.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>record</strong> <em>(Object)</em> - Record object.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
+          <div class='highlight'><pre>db.record.get(<span class="hljs-string">'#1:1'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> {</span>
+    console.log(<span class="hljs-string">'Loaded record:'</span>, record);
+  });</pre></div>
+          
+          
+          
           <h3 id="add-record">Add Record</h3>
-<p>Creating a record for a class</p>
+<p>Create a new record.</p>
+
+          
+          <div class='highlight'><pre>db.record.create(properties);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>properties</strong> <em>(Object)</em> - Record properties to set.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>record</strong> <em>(Object|Array)</em> - Updated record(s).</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
+          <div class='highlight'><pre>db.record.create({
+    <span class="hljs-string">'@class'</span>: <span class="hljs-string">'OUser'</span>,
+    name: <span class="hljs-string">'testuser'</span>,
+    password: <span class="hljs-string">'testpassword'</span>,
+    status: <span class="hljs-string">'ACTIVE'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(record)</span> {</span>
+    console.log(<span class="hljs-string">'Created record:'</span>, record);
+  });</pre></div>
+          
+          
+          
+          <p>Creating a record for a class.</p>
+
+          
+          <div class='highlight'><pre>Class.create(properties);</pre></div>
+          
+          
+          
+          <p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>MyClass.create({
@@ -523,35 +758,56 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <h3 id="list-records">List Records</h3>
-<p>Listing records in a class</p>
+          <h3 id="update">Update</h3>
+<p>Modify an existing record.</p>
 
           
-          <div class='highlight'><pre>MyClass.list()
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records)</span> {</span>
-    console.log(<span class="hljs-string">'Found '</span> + records.length + <span class="hljs-string">' records:'</span>, records);
-  });</pre></div>
+          <div class='highlight'><pre>db.record.update(properties, options);</pre></div>
           
           
           
-          <h2 id="records">Records</h2>
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>properties</strong> <em>(Object)</em> - Record properties to set.</li>
+<li><strong>options</strong> <em>(Object)</em> - Update options.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>record</strong> <em>(Object|Array)</em> - Updated record(s).</li>
+</ul>
+<p><em>Example:</em></p>
 
           
-          
-          
-          <h3 id="get">Get</h3>
-<p>Loading a record by RID.</p>
-
-          
-          <div class='highlight'><pre>db.record.get(<span class="hljs-string">'#1:1'</span>)
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> {</span>
-    console.log(<span class="hljs-string">'Loaded record:'</span>, record);
+          <div class='highlight'><pre>db.record.update({
+    <span class="hljs-string">'@rid'</span>: createdRID,
+    name: <span class="hljs-string">'testuserrenamed'</span>
+  },
+  {
+    preserve: <span class="hljs-literal">true</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(record)</span> {</span>
+    record.name.should.equal(<span class="hljs-string">'testuserrenamed'</span>);
   });</pre></div>
           
           
           
           <h3 id="delete">Delete</h3>
-<p>Deleting a record</p>
+<p>Deleting a record.</p>
+
+          
+          <div class='highlight'><pre>db.record.delete(recordId);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>recordId</strong> <em>(String)</em> - Record id of record to delete.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>results</strong> <em>(Boolean)</em> - If record was deleted, returns true. Otherwise false.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.record.delete(<span class="hljs-string">'#1:1'</span>)
@@ -567,7 +823,22 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           <h3 id="add">Add</h3>
-<p>Creating a new, empty vertex</p>
+<p>Creating a new, empty vertex.</p>
+
+          
+          <div class='highlight'><pre>db.vertex.create(name);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>class|properties</strong> <em>(String|Object)</em> - Vertex class or properties to set.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>vertex</strong> <em>(Object)</em> - Vertex created.</li>
+</ul>
+<p><em>Example:</em> Creating a new vertex with no properties, just a class name.</p>
 
           
           <div class='highlight'><pre>db.vertex.create(<span class="hljs-string">'V'</span>)
@@ -577,7 +848,7 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <p>Creating a new vertex with some properties</p>
+          <p><em>Example:</em> Creating a new vertex with some properties.</p>
 
           
           <div class='highlight'><pre>db.vertex.create({
@@ -592,7 +863,22 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           <h3 id="delete">Delete</h3>
-<p>Deleting a vertex</p>
+<p>Deleting a vertex.</p>
+
+          
+          <div class='highlight'><pre>db.vertex.delete(recordId);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>recordId</strong> <em>(String)</em> - Record id of vertex to delete.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>count</strong> <em>(Number)</em> - Number of vertices deleted.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.vertex.delete(<span class="hljs-string">'#12:12'</span>)
@@ -608,7 +894,24 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           <h3 id="add">Add</h3>
-<p>Creating a simple edge between vertices</p>
+<p>Creating a simple edge between vertices.</p>
+
+          
+          <div class='highlight'><pre>db.edge.from(originId).to(destId).create(<span class="hljs-keyword">class</span>|properties);</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>originId</strong> <em>(String)</em> - Record id for origin record.</li>
+<li><strong>destId</strong> <em>(String)</em> - Record id for destination record.</li>
+<li><strong>class|properties</strong> <em>(String|Object)</em> - Edge class or properties to set.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>edge</strong> <em>(Object)</em> - Created edge.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.edge.from(<span class="hljs-string">'#12:12'</span>)
@@ -620,7 +923,14 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <p>Creating an edge with properties</p>
+          <p>Creating an edge with properties.</p>
+
+          
+          <div class='highlight'><pre>db.edge.from(originId).to(destId).create(properties);</pre></div>
+          
+          
+          
+          <p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.edge.from(<span class="hljs-string">'#12:12'</span>)
@@ -637,24 +947,79 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           <h3 id="delete">Delete</h3>
-<p>Deleting an edge between vertices</p>
+<p>Deleting an edge between vertices.</p>
+
+          
+          <div class='highlight'><pre>db.edge.from(originId).to(destId).delete();</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>originId</strong> <em>(String)</em> - Record id for origin record.</li>
+<li><strong>destId</strong> <em>(String)</em> - Record id for destination record.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>count</strong> <em>(Number)</em> - Number of edges deleted.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.edge.from(<span class="hljs-string">'#12:12'</span>)
   .to(<span class="hljs-string">'#12:13'</span>)
   .delete()
   .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(count)</span> {</span>
-    console.log(<span class="hljs-string">'deleted '</span> + count + <span class="hljs-string">' edges'</span>);
+    console.log(<span class="hljs-string">'Deleted '</span> + count + <span class="hljs-string">' edges'</span>);
   });</pre></div>
           
           
           
-          <h2 id="query-builder">Query Builder</h2>
+          <h2 id="query">Query</h2>
 
           
           
           
+          <h3 id="sql">SQL</h3>
+<p>Send SQL-like commands to OrientDB.</p>
+
+          
+          <div class='highlight'><pre>db.query(sql);</pre></div>
+          
+          
+          
+          <p><em>Example:</em></p>
+
+          
+          <div class='highlight'><pre>db.query(<span class="hljs-string">'SELECT FROM V LIMIT 5'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span>{</span>
+    console.log(<span class="hljs-string">'Query results: '</span>, results);
+  });</pre></div>
+          
+          
+          
           <h3 id="select">Select</h3>
+
+          
+          
+          
+          <p><strong>One</strong> -
+Select a single record from the query. Results are returned as an object.</p>
+
+          
+          <div class='highlight'><pre>db.select().from(<span class="hljs-keyword">class</span>).where(params).one();</pre></div>
+          
+          
+          
+          <p><strong>All</strong> -
+Select all records from a query. Results are returned with an array of record objects.</p>
+
+          
+          <div class='highlight'><pre>db.select().from(<span class="hljs-keyword">class</span>).where(params).all();</pre></div>
+          
+          
+          
+          <p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.select()
@@ -667,7 +1032,23 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <p>Select Records with Fetch Plan</p>
+          <p><strong>Limits</strong> -
+Limit the number of records that are returned.</p>
+
+          
+          <div class='highlight'><pre>db.select().from(<span class="hljs-keyword">class</span>).where(params).limit(limits).all();</pre></div>
+          
+          
+          
+          <p><strong>Fetch Plan</strong> -
+Select Records with Fetch Plan.</p>
+
+          
+          <div class='highlight'><pre>db.select().from(<span class="hljs-keyword">class</span>).where(params).fetch(plan).all();</pre></div>
+          
+          
+          
+          <p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.select()
@@ -681,7 +1062,15 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <p>Select an expression</p>
+          <p><strong>Expressions</strong> -
+Select an expression</p>
+
+          
+          <div class='highlight'><pre>db.select(expression).from(<span class="hljs-keyword">class</span>).where(params).scalar();</pre></div>
+          
+          
+          
+          <p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.select(<span class="hljs-string">'count(*)'</span>)
@@ -697,6 +1086,13 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           <p>Return a specific column</p>
 
           
+          <div class='highlight'><pre>db.select(expression).from(<span class="hljs-keyword">class</span>).where(params).column(columnName).all();</pre></div>
+          
+          
+          
+          <p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
   .from(<span class="hljs-string">'OUser'</span>)
   .where({status: <span class="hljs-string">'ACTIVE'</span>})
@@ -708,7 +1104,25 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <p>Transform a field</p>
+          <h3 id="transform">Transform</h3>
+
+          
+          <div class='highlight'><pre>db.select(expression).from(<span class="hljs-keyword">class</span>).where(params).transform(fields).all();</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>expression</strong> <em>(String)</em> - properties to select.</li>
+<li><strong>class</strong> <em>(String)</em> - Class name.</li>
+<li><strong>params</strong> <em>(Object)</em> - Where params to restrict the selection of results.</li>
+<li><strong>fields</strong> <em>(Object)</em> - Fields to transform results.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Array)</em> - List of record objects.</li>
+</ul>
+<p><em>Example:</em> Transform a field</p>
 
           
           <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
@@ -727,7 +1141,7 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <p>Transform a record</p>
+          <p><em>Example:</em> Transform a record</p>
 
           
           <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
@@ -744,7 +1158,26 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           
-          <p>Specify default values</p>
+          <h3 id="defaults">Defaults</h3>
+<p>Specify default values. If results fail to return a value, a default will be used instead.</p>
+
+          
+          <div class='highlight'><pre>db.select(expression).from(<span class="hljs-keyword">class</span>).where(params).defaults(defaults).all();</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>expression</strong> <em>(String)</em> - properties to select.</li>
+<li><strong>class</strong> <em>(String)</em> - Class name.</li>
+<li><strong>params</strong> <em>(Object)</em> - Where params to restrict the selection of results.</li>
+<li><strong>defaults</strong> <em>(Object)</em> - Default values.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Array)</em> - List of record objects.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
@@ -764,6 +1197,22 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           <h3 id="traverse">Traverse</h3>
 
           
+          <div class='highlight'><pre>db.traverse().from(<span class="hljs-keyword">class</span>).where(params).all();</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>class</strong> <em>(String)</em> - Class name.</li>
+<li><strong>params</strong> <em>(Object)</em> - Where params to restrict the selection of results.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>list</strong> <em>(Array)</em> - List of record objects.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>db.traverse()
   .from(<span class="hljs-string">'OUser'</span>)
   .where({name: <span class="hljs-string">'guest'</span>})
@@ -775,6 +1224,22 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           
           
           <h3 id="insert">Insert</h3>
+
+          
+          <div class='highlight'><pre>db.insert().into(<span class="hljs-keyword">class</span>).set(properties).one();</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>class</strong> <em>(String)</em> - Class name.</li>
+<li><strong>properties</strong> <em>(Object)</em> - Properties to set.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>Record</strong> <em>(Object)</em> - Record object.</li>
+</ul>
+<p><em>Example:</em></p>
 
           
           <div class='highlight'><pre>db.insert()
@@ -790,6 +1255,23 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           <h3 id="update">Update</h3>
 
           
+          <div class='highlight'><pre>db.update(<span class="hljs-keyword">class</span>).set(properties).where(params).scalar();</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>class</strong> <em>(String)</em> - Class name.</li>
+<li><strong>properties</strong> <em>(Object)</em> - Properties to set.</li>
+<li><strong>params</strong> <em>(Object)</em> - Where params to restrict the selection of results.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>results</strong> <em>(Number)</em> - Number of records updated.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>db.update(<span class="hljs-string">'OUser'</span>)
   .set({password: <span class="hljs-string">'changed'</span>})
   .where({name: <span class="hljs-string">'demo'</span>})
@@ -803,6 +1285,23 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
           <h3 id="delete">Delete</h3>
 
           
+          <div class='highlight'><pre>db.delete().from(<span class="hljs-keyword">class</span>).where(params).limit(limits).scalar();</pre></div>
+          
+          
+          
+          <p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>class</strong> <em>(String)</em> - Class name.</li>
+<li><strong>params</strong> <em>(Object)</em> - Where params to restrict the selection of results.</li>
+<li><strong>limits</strong> <em>(String)</em> - Maximum number of results to return.</li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><strong>results</strong> <em>(Boolean)</em> - If record is deleted, returns true. Otherwise false.</li>
+</ul>
+<p><em>Example:</em></p>
+
+          
           <div class='highlight'><pre>db.delete()
   .from(<span class="hljs-string">'OUser'</span>)
   .where({name: <span class="hljs-string">'demo'</span>})
@@ -813,27 +1312,14 @@ console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre
   });</pre></div>
           
           
-
-          <div class="fleur">h</div>
           <br/>
 
           <h2>Contributing</h2>
-
           <p class="well">
-            Take care to maintain the existing coding style. Add <strong>Enter Unit Testing Framework</strong> unit tests for any new or changed functionality. Lint and test your code using <strong>Enter Build Tool Here</strong>.
-          </p>
-
-          <p class="well">
-            <span class="note">
-              After you have verified your code, send a pull request to the <em>Enter Project Name Here</em> develop branch.  After you send a pull request, you will hear back from me shortly after I review your code.  You’ll find source code in the <code>src</code> subdirectory!
-            </span>
+            So you want to contribute to oriento? Great! But to increase the chances of your changes being accepted
+             quickly, please read the following guide. <a href="https://github.com/codemix/oriento/blob/master/CONTRIBUTING.md">Contributing.md</a>
           </p>
           <br/>
-
-          <h2>Extending</h2>
-          <p class="well">
-            If you find that you need a feature that <em>Enter Project Name Here</em> does not currently support, either let me know via the <a href="#" target="_blank">Github issue tracker</a>, or <a href="#" target="_blank">fork the project</a> and and easily extend <em>Enter Project Name Here</em>!
-          </p>
         </div>
       </div>
     </div>
