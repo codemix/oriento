@@ -1,0 +1,265 @@
+body {
+	background-color: #f1f1f1;
+	font-size: 12px;
+	padding: 50px;
+}
+body,
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	font-family: 'Raleway', sans-serif;
+}
+h2 {
+	font-weight: bold;
+	margin-top: 75px;
+}
+h3 {
+	font-size: 24px;
+	margin-top: 50px;
+	border-bottom: 1px solid #ddd;
+}
+
+a {
+	color: #0059B3;
+}
+a:hover {
+	color: #0059B3;
+}
+p {
+	font-size: 12px;
+}
+blockquote p {
+	font-size: 10px;
+	color: #999;
+}
+.headerDoc {
+	color: #005580;
+}
+span.note {
+	font-size: 14px;
+}
+.source-area {
+	width: 100%;
+	height: 200px;
+	background: #D9D9D9;
+}
+#css-download, #javascript-download {
+	display: none;
+}
+
+/* Nav */
+.tocify ul, .tocify li {
+	line-height: 30px;
+}
+
+ul.tocify-header>li>a,
+li.tocify-item a {
+	padding: 5px 0px;
+	font-size: 14px;
+}
+
+ul.tocify-header>li>a:hover,
+ul.tocify-header>li>a:focus,
+li.tocify-item a:hover,
+li.tocify-item a:focus {
+	background-color: #fff;
+	border-radius: 5px;
+}
+li.tocify-item a {
+	font-size: 12px;
+	padding:0px;
+}
+
+/* Jumbotron */
+.jumbotron h1,
+.jumbotron .h1 {
+	margin-top: 0px;
+}
+
+/*---------------------- Syntax Highlighting -----------------------------*/
+td.linenos { background-color: #f0f0f0; padding-right: 10px; }
+span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+/* github.com style (c) Vasily Polovnyov <vast@whiteants.net> */
+
+pre, tt, code {
+	color: #333;
+	font-family: Menlo, Consolas, Monaco, monospace;
+	line-height: 20px;
+	background: #FFF;
+	border: 0;
+	overflow-x: auto;
+	padding: 10px 15px;
+	margin: 0;
+}
+code {
+	color: #222;
+	padding: 5px;
+	background: transparent;
+}
+pre code {
+	border: 0;
+	padding: 0;
+	background: transparent;
+}
+
+pre .line .line-number {
+	display: block;
+}
+
+pre .hljs-comment,
+pre .hljs-template_comment,
+pre .hljs-diff .hljs-header,
+pre .hljs-javadoc {
+	color: #408080;
+	font-style: italic
+}
+
+pre .hljs-keyword,
+pre .hljs-assignment,
+pre .hljs-literal,
+pre .hljs-css .hljs-rule .hljs-keyword,
+pre .hljs-winutils,
+pre .hljs-javascript .hljs-title,
+pre .hljs-lisp .hljs-title,
+pre .hljs-subst {
+	color: #848CEA;
+	font-weight: bold
+}
+
+pre .hljs-number,
+pre .hljs-hexcolor {
+	color: #009364;
+	font-weight: bold;
+}
+
+pre .hljs-string,
+pre .hljs-tag .hljs-value,
+pre .hljs-phpdoc,
+pre .hljs-tex .hljs-formula {
+	color: #3AD900;
+}
+
+pre .hljs-title,
+pre .hljs-id {
+	color: #19469D;
+}
+pre .hljs-params {
+	color: #124762;
+}
+
+pre .hljs-javascript .hljs-title,
+pre .hljs-lisp .hljs-title,
+pre .hljs-subst {
+	font-weight: normal
+}
+
+pre .hljs-class .hljs-title,
+pre .hljs-haskell .hljs-label,
+pre .hljs-tex .hljs-command {
+	color: #458;
+	font-weight: bold
+}
+
+pre .hljs-tag,
+pre .hljs-tag .hljs-title,
+pre .hljs-rules .hljs-property,
+pre .hljs-django .hljs-tag .hljs-keyword {
+	color: #000080;
+	font-weight: normal
+}
+
+pre .hljs-attribute,
+pre .hljs-variable,
+pre .hljs-instancevar,
+pre .hljs-lisp .hljs-body {
+	color: #008080
+}
+
+pre .hljs-regexp {
+	color: #B68
+}
+
+pre .hljs-class {
+	color: #458;
+	font-weight: bold
+}
+
+pre .hljs-symbol,
+pre .hljs-ruby .hljs-symbol .hljs-string,
+pre .hljs-ruby .hljs-symbol .hljs-keyword,
+pre .hljs-ruby .hljs-symbol .hljs-keymethods,
+pre .hljs-lisp .hljs-keyword,
+pre .hljs-tex .hljs-special,
+pre .hljs-input_number {
+	color: #990073
+}
+
+pre .hljs-builtin,
+pre .hljs-constructor,
+pre .hljs-built_in,
+pre .hljs-lisp .hljs-title {
+	color: #0086b3
+}
+
+pre .hljs-preprocessor,
+pre .hljs-pi,
+pre .hljs-doctype,
+pre .hljs-shebang,
+pre .hljs-cdata {
+	color: #999;
+	font-weight: bold
+}
+
+pre .hljs-deletion {
+	background: #fdd
+}
+
+pre .hljs-addition {
+	background: #dfd
+}
+
+pre .hljs-diff .hljs-change {
+	background: #0086b3
+}
+
+pre .hljs-chunk {
+	color: #aaa
+}
+
+pre .hljs-tex .hljs-formula {
+	opacity: 0.5;
+}
+section#components {
+    padding-top: 0px;
+}
+.sidebar-nav {
+  padding: 9px 0;
+}
+
+/* Responsive */
+@media (max-width: 978px) {
+  .select2 {
+    padding-left: 0px;
+    float:left;
+    width: 100%;
+  }
+  #fork-me {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+   .tocify {
+       padding-bottom: 20px;
+   }
+}
+@media (max-width: 480px) {
+   .hero-unit h1 {
+       font-size: 30px;
+   }
+}
+
+@media (max-width: 767px) {
+    #toc {
+        position: relative;
+        width: 100%;
+        margin: 0px 0px 20px 0px;
+    }
+}

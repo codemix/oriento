@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Oriento API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="cleartype" content="on">
+
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,200,700' rel='stylesheet' type='text/css'/>
+
+    <!-- Styles -->
+    <link href="css/bootswatch/Cosmo/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/black-tie/jquery-ui.css" rel="stylesheet" />
+    <link href="css/jquery.tocify.css" rel="stylesheet" />
+    <link href="css/prettify.css" rel="stylesheet" type="text/css" />
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="css/rainbow/themes/nl.css" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav icon and touch icons -->
+    <link href="../assets/ico/favicon.ico" rel="shortcut icon">
+    <link href="../assets/ico/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144">
+    <link href="../assets/ico/apple-touch-icon-114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114">
+    <link href="../assets/ico/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72">
+    <link href="../assets/ico/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon-precomposed">
+  </head>
+
+  <body>
+    <a href="https://github.com/codemix/oriento"><img style="position: fixed; top: 0; right: 0; border: 0; width: 149px; height: 149px; z-index: 999999;" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-graphite@2x.png" alt="Fork me on GitHub"></a>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom:120px;">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Oriento</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li class="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
+
+    <div class="container-fluid" style="margin-top:50px;">
+      <div class="row">
+        <div class="tocify col-sm-3 col-md-3">
+          <div id="toc"></div>
+        </div>
+
+        <div class="col-sm-9 col-md-9">
+          <div class="jumbotron">
+            
+            
+            <h1 id="oriento-api">Oriento API</h1>
+<p>The methods below will call the server functions. User authentication for the server must first be configured in the
+orientdb-server-config.xml file. See
+<a href="https://github.com/orientechnologies/orientdb/wiki/DB-Server#users">OrientDB Wiki</a>.
+To manipulate the actual database and records, see the
+<a href="https://github.com/nitrog7/node-orientdb/wiki/Document-Database">document database</a> api page. Additional details
+can be found on the <a href="https://github.com/orientechnologies/orientdb/wiki/Network-Binary-Protocol">OrientDB wiki</a> page.</p>
+
+            
+            
+          </div>
+
+          
+          
+          <h2 id="initialize-the-server">Initialize the Server</h2>
+<p>First, require the library.</p>
+
+          
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> Oriento = <span class="hljs-built_in">require</span>(<span class="hljs-string">'oriento'</span>);</pre></div>
+          
+          
+          
+          <h3 id="basic-configuration">Basic Configuration</h3>
+<p>Now, we call the <code>Oriento</code> function, passing in our connection options.</p>
+
+          
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> server = <span class="hljs-keyword">new</span> Oriento({
+  host: <span class="hljs-string">'localhost'</span>,
+  port: <span class="hljs-number">2424</span>,
+  username: <span class="hljs-string">'root'</span>,
+  password: <span class="hljs-string">'yourpassword'</span>
+});</pre></div>
+          
+          
+          
+          <p><code>server</code> is now an instance of <code>Oriento.Server</code>. it provides methods for creating, listing, dropping and  using
+databases.</p>
+
+          
+          
+          
+          <h3 id="connection-pool">Connection Pool</h3>
+<p>Configuring the client to use a connection pool.
+By default Oriento uses one socket per server, but it is also possible to use a connection pool.
+You should carefully benchmark this against the default setting for your use case,
+there are scenarios where a connection pool is actually slightly worse for performance than a single connection.</p>
+
+          
+          <div class='highlight'><pre>
+<span class="hljs-keyword">var</span> server = <span class="hljs-keyword">new</span> Oriento({
+  host: <span class="hljs-string">'localhost'</span>,
+  port: <span class="hljs-number">2424</span>,
+  username: <span class="hljs-string">'root'</span>,
+  password: <span class="hljs-string">'yourpassword'</span>,
+  pool: {
+    max: <span class="hljs-number">10</span> <span class="hljs-comment">// 1 by default</span>
+  }
+});</pre></div>
+          
+          
+          
+          <h2 id="methods">Methods</h2>
+<p>The methods are BlueBird promise objects and use the then and error methods for callbacks. Take a look at the
+<a href="https://github.com/petkaantonov/bluebird/blob/master/API.md">Bluebird API</a> for more details.</p>
+
+          
+          <div class='highlight'><pre>
+server.method().then(resultMethod).error(errorMethod);</pre></div>
+          
+          
+          
+          <p><strong>Example:</strong></p>
+
+          
+          <div class='highlight'><pre>server.method()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+    console.log(<span class="hljs-string">'Success with results.'</span>);
+  })
+  .error(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error)</span> {</span>
+    console.log(<span class="hljs-string">'Error with message.'</span>);
+  });</pre></div>
+          
+          
+          
+          <h2 id="server">Server</h2>
+
+          
+          
+          
+          <p>Properties:</p>
+<ul>
+<li><strong>sessionId</strong> <em>(Number)</em> - Unique session id automatically generated by the server.</li>
+<li><strong>host</strong> <em>(String)</em> - Location of the server. Default: “localhost”.</li>
+<li><strong>port</strong> <em>(Number)</em> - Server port. Default: 2424.</li>
+<li><strong>username</strong> <em>(String)</em> - Authentication username. Default: “admin”.</li>
+<li><strong>password</strong> <em>(String)</em> - Authentication password. Default: “admin”.</li>
+<li><strong>protocolVersion</strong> <em>(Number)</em> - Current server protocol</li>
+<li><strong>logger</strong> <em>(Object)</em> - Logging utility</li>
+<li><strong>socket</strong> <em>(Object)</em> - Socket server is using to connect.</li>
+</ul>
+
+          
+          
+          
+          <h3 id="connect">Connect</h3>
+<p>Oriento connects to the OrientDB server the first time it is needed, if no connection has already been made.</p>
+
+          
+          
+          
+          <h3 id="list">List</h3>
+<p>List all the databases on the server.</p>
+<blockquote>
+<p>Note: there is no need to call <code>connect()</code>, the
+connection is established the first time it is needed.</p>
+</blockquote>
+
+          
+          <div class='highlight'><pre>server.list()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(list)</span> {</span>
+    console.log(<span class="hljs-string">'Databases: '</span>, list);
+  });</pre></div>
+          
+          
+          
+          <p>Response:</p>
+<ul>
+<li><strong>list</strong> <em>(Object)</em> - A list of database objects.</li>
+</ul>
+
+          
+          
+          
+          <h3 id="exists">Exists</h3>
+<p>Check whether a database exists.</p>
+
+          
+          <div class='highlight'><pre>server.exists(name)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+    console.log(<span class="hljs-string">'Database exists: '</span>, results);
+  });</pre></div>
+          
+          
+          
+          <p>Parameters:</p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> - Database name.</li>
+</ul>
+<p>Response:</p>
+<ul>
+<li><strong>results</strong> <em>(Boolean)</em> - If database exists, returns true. Otherwise false.</li>
+</ul>
+
+          
+          
+          
+          <h2 id="configuration">Configuration</h2>
+<p>The configuration file is located in orientdb-server-config.xml, under:</p>
+<blockquote>
+<p>&lt;orient-server&gt;
+  &lt;properties&gt;&lt;/properties&gt;
+&lt;/orient-server&gt;</p>
+</blockquote>
+
+          
+          
+          
+          <h3 id="list">List</h3>
+<p>Get list of parameters set in the configuration.</p>
+
+          
+          <div class='highlight'><pre>server.config.list()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(list)</span> {</span>
+    console.log(<span class="hljs-string">'List of the configuration properties: '</span> + list);
+  });</pre></div>
+          
+          
+          
+          <p>Response:</p>
+<ul>
+<li><strong>list</strong> <em>(Object)</em> - List of parameters.<ul>
+<li><strong>name</strong> <em>(String)</em> - Parameters key.</li>
+<li><strong>value</strong> <em>(String)</em> - Parameter value.</li>
+</ul>
+</li>
+</ul>
+
+          
+          
+          
+          <h3 id="get">Get</h3>
+<p>Get configuration parameters</p>
+
+          
+          <div class='highlight'><pre>server.config.get(key)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
+    console.log(<span class="hljs-string">'Config param, '</span> + key + <span class="hljs-string">' = '</span> + value);
+  });</pre></div>
+          
+          
+          
+          <p>Parameters:</p>
+<ul>
+<li><strong>key</strong> <em>(String)</em> - Property key.</li>
+</ul>
+<p>Response:</p>
+<ul>
+<li><strong>value</strong> <em>(String)</em> - Value of property.</li>
+</ul>
+
+          
+          
+          
+          <h3 id="set">Set</h3>
+<p>Set a configuration parameter</p>
+
+          
+          <div class='highlight'><pre>server.config.set(key, value)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+    console.log(<span class="hljs-string">'Config param, '</span> + key + <span class="hljs-string">' updated? '</span>, results);
+  });</pre></div>
+          
+          
+          
+          <p>Parameters:</p>
+<ul>
+<li><strong>key</strong> <em>(String)</em> - Property key.</li>
+<li><strong>value</strong> <em>(String)</em> - Value of property.</li>
+</ul>
+<p>Response:</p>
+<ul>
+<li><strong>results</strong> <em>(Boolean)</em> - If property was set successfully, return true. Otherwise false.</li>
+</ul>
+
+          
+          
+          
+          <h2 id="database">Database</h2>
+
+          
+          
+          
+          <p>Properties:</p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> - Database name.</li>
+<li><strong>sessionId</strong> <em>(Number)</em> - The current session id.</li>
+<li><strong>storage</strong> <em>(String)</em> - Type of stroage. Options: plocal, local, or memory. Default: “plocal”.</li>
+<li><strong>type</strong> <em>(String)</em> - Type of database. Options: document, or graph. Default: “document”.</li>
+<li><strong>username</strong> <em>(String)</em> - Authentication username.</li>
+<li><strong>password</strong> <em>(String)</em> - Authentication password.</li>
+<li><strong>dataSegments</strong> <em>(Array)</em> - A list of data segments.</li>
+<li><strong>transactionId</strong> <em>(Number)</em> - Transaction id.</li>
+<li><strong>server</strong> <em>(Object)</em> - Server object.</li>
+<li><strong>cluster</strong> <em>(Object)</em> - Cluster object.</li>
+<li><strong>class</strong> <em>(Object)</em> - Class object.</li>
+<li><strong>record</strong> <em>(Object)</em> - Record object.</li>
+<li><strong>vertex</strong> <em>(Object)</em> - Vertex object.</li>
+<li><strong>edge</strong> <em>(Object)</em> - Edge object.</li>
+<li><strong>index</strong> <em>(Object)</em> - Index object.</li>
+</ul>
+
+          
+          
+          
+          <h3 id="open">Open</h3>
+<p>Using an existing database</p>
+
+          
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> db = server.use(<span class="hljs-string">'mydb'</span>);
+console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre></div>
+          
+          
+          
+          <p>Using an existing database with credentials</p>
+
+          
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> db = server.use({
+  name: <span class="hljs-string">'mydb'</span>,
+  username: <span class="hljs-string">'admin'</span>,
+  password: <span class="hljs-string">'admin'</span>
+});
+console.log(<span class="hljs-string">'Using database: '</span> + db.name);</pre></div>
+          
+          
+          
+          <h3 id="add">Add</h3>
+<p>Creating a new database in the OrientDB server instance.</p>
+
+          
+          <div class='highlight'><pre>server.create({
+    name: <span class="hljs-string">'mydb'</span>,
+    type: <span class="hljs-string">'graph'</span>,
+    storage: <span class="hljs-string">'plocal'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(db)</span> {</span>
+    console.log(<span class="hljs-string">'Created a database called '</span> + db.name);
+  });</pre></div>
+          
+          
+          
+          <p>Parameters:</p>
+<ul>
+<li><strong>config</strong> <em>(Object)</em> - Database configuration.<ul>
+<li><strong>name</strong> <em>(String)</em> - Name of the database. <em>Required</em>.</li>
+<li><strong>type</strong> <em>(String)</em> - Type of database. Options: document or graph. Default: “document”.</li>
+<li><strong>storage</strong> <em>(String)</em> - Storage type. Options: plocal, local, memory. Default: “plocal”.</li>
+</ul>
+</li>
+</ul>
+<p>Response:</p>
+<ul>
+<li><strong>Database</strong> <em>(Object)</em> - A database object.</li>
+</ul>
+
+          
+          
+          
+          <h3 id="delete">Delete</h3>
+<p>Removes a database from the OrientDB Server instance..</p>
+
+          
+          <div class='highlight'><pre>server.delete({
+  name: <span class="hljs-string">'mydb'</span>,
+  type: <span class="hljs-string">'graph'</span>,
+  storage: <span class="hljs-string">'plocal'</span>
+})
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+    console.log(<span class="hljs-string">'Delete a database: '</span> + db.name);
+  });</pre></div>
+          
+          
+          
+          <p>Parameters:</p>
+<ul>
+<li><strong>config</strong> <em>(Object)</em> - Database configuration.<ul>
+<li><strong>name</strong> <em>(String)</em> - Name of the database. <em>Required</em>.</li>
+<li><strong>type</strong> <em>(String)</em> - Type of database. Options: document or graph. Default: “document”.</li>
+<li><strong>storage</strong> <em>(String)</em> - Storage type. Options: plocal, local, memory. Default: “plocal”.</li>
+</ul>
+</li>
+</ul>
+<p>Response:</p>
+<ul>
+<li><strong>results</strong> <em>(Boolean)</em> - If database exists, returns true. Otherwise false.</li>
+</ul>
+
+          
+          
+          
+          <h2 id="classes">Classes</h2>
+
+          
+          
+          
+          <h3 id="get">Get</h3>
+<p>Getting an existing class</p>
+
+          
+          <div class='highlight'><pre>db.class.get(<span class="hljs-string">'MyClass'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(MyClass)</span> {</span>
+    console.log(<span class="hljs-string">'Got class: '</span> + MyClass.name);
+  });</pre></div>
+          
+          
+          
+          <h3 id="list">List</h3>
+<p>Listing all the classes in the database</p>
+
+          
+          <div class='highlight'><pre>db.class.list()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(classes)</span> {</span>
+    console.log(<span class="hljs-string">'There are '</span> + classes.length + <span class="hljs-string">' classes in the db:'</span>, classes);
+  });</pre></div>
+          
+          
+          
+          <h3 id="add">Add</h3>
+<p>Creating a new class</p>
+
+          
+          <div class='highlight'><pre>db.class.create(<span class="hljs-string">'MyClass'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(MyClass)</span> {</span>
+    console.log(<span class="hljs-string">'Created class: '</span> + MyClass.name);
+  });</pre></div>
+          
+          
+          
+          <p>Creating a new class that extends another</p>
+
+          
+          <div class='highlight'><pre>db.class.create(<span class="hljs-string">'MyOtherClass'</span>, <span class="hljs-string">'MyClass'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(MyOtherClass)</span> {</span>
+    console.log(<span class="hljs-string">'Created class: '</span> + MyOtherClass.name);
+  });</pre></div>
+          
+          
+          
+          <h3 id="properties">Properties</h3>
+
+          
+          
+          
+          <h4 id="list">List</h4>
+<p>Listing properties in a class</p>
+
+          
+          <div class='highlight'><pre>MyClass.property.list()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(properties)</span> {</span>
+    console.log(<span class="hljs-string">'The class has the following properties:'</span>, properties);
+  });</pre></div>
+          
+          
+          
+          <h4 id="add">Add</h4>
+<p>Adding a property to a class</p>
+
+          
+          <div class='highlight'><pre>MyClass.property.create({
+  name: <span class="hljs-string">'name'</span>,
+    type: <span class="hljs-string">'String'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    console.log(<span class="hljs-string">'Property created.'</span>)
+  });</pre></div>
+          
+          
+          
+          <h4 id="delete">Delete</h4>
+<p>Deleting a property from a class</p>
+
+          
+          <div class='highlight'><pre>MyClass.property.delete(<span class="hljs-string">'myprop'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    console.log(<span class="hljs-string">'Property deleted.'</span>);
+  });</pre></div>
+          
+          
+          
+          <h3 id="add-record">Add Record</h3>
+<p>Creating a record for a class</p>
+
+          
+          <div class='highlight'><pre>MyClass.create({
+    name: <span class="hljs-string">'John McFakerton'</span>,
+    email: <span class="hljs-string">'fake@example.com'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(record)</span> {</span>
+    console.log(<span class="hljs-string">'Created record: '</span>, record);
+  });</pre></div>
+          
+          
+          
+          <h3 id="list-records">List Records</h3>
+<p>Listing records in a class</p>
+
+          
+          <div class='highlight'><pre>MyClass.list()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records)</span> {</span>
+    console.log(<span class="hljs-string">'Found '</span> + records.length + <span class="hljs-string">' records:'</span>, records);
+  });</pre></div>
+          
+          
+          
+          <h2 id="records">Records</h2>
+
+          
+          
+          
+          <h3 id="get">Get</h3>
+<p>Loading a record by RID.</p>
+
+          
+          <div class='highlight'><pre>db.record.get(<span class="hljs-string">'#1:1'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> {</span>
+    console.log(<span class="hljs-string">'Loaded record:'</span>, record);
+  });</pre></div>
+          
+          
+          
+          <h3 id="delete">Delete</h3>
+<p>Deleting a record</p>
+
+          
+          <div class='highlight'><pre>db.record.delete(<span class="hljs-string">'#1:1'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    console.log(<span class="hljs-string">'Record deleted'</span>);
+  });</pre></div>
+          
+          
+          
+          <h2 id="vertex">Vertex</h2>
+
+          
+          
+          
+          <h3 id="add">Add</h3>
+<p>Creating a new, empty vertex</p>
+
+          
+          <div class='highlight'><pre>db.vertex.create(<span class="hljs-string">'V'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(vertex)</span> {</span>
+    console.log(<span class="hljs-string">'created vertex'</span>, vertex);
+  });</pre></div>
+          
+          
+          
+          <p>Creating a new vertex with some properties</p>
+
+          
+          <div class='highlight'><pre>db.vertex.create({
+    <span class="hljs-string">'@class'</span>: <span class="hljs-string">'V'</span>,
+    key: <span class="hljs-string">'value'</span>,
+    foo: <span class="hljs-string">'bar'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(vertex)</span> {</span>
+    console.log(<span class="hljs-string">'created vertex'</span>, vertex);
+  });</pre></div>
+          
+          
+          
+          <h3 id="delete">Delete</h3>
+<p>Deleting a vertex</p>
+
+          
+          <div class='highlight'><pre>db.vertex.delete(<span class="hljs-string">'#12:12'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(count)</span> {</span>
+    console.log(<span class="hljs-string">'deleted '</span> + count + <span class="hljs-string">' vertices'</span>);
+  });</pre></div>
+          
+          
+          
+          <h2 id="edges">Edges</h2>
+
+          
+          
+          
+          <h3 id="add">Add</h3>
+<p>Creating a simple edge between vertices</p>
+
+          
+          <div class='highlight'><pre>db.edge.from(<span class="hljs-string">'#12:12'</span>)
+  .to(<span class="hljs-string">'#12:13'</span>)
+  .create(<span class="hljs-string">'E'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(edge)</span> {</span>
+    console.log(<span class="hljs-string">'created edge:'</span>, edge);
+  });</pre></div>
+          
+          
+          
+          <p>Creating an edge with properties</p>
+
+          
+          <div class='highlight'><pre>db.edge.from(<span class="hljs-string">'#12:12'</span>)
+  .to(<span class="hljs-string">'#12:13'</span>)
+  .create({
+    <span class="hljs-string">'@class'</span>: <span class="hljs-string">'E'</span>,
+    key: <span class="hljs-string">'value'</span>,
+    foo: <span class="hljs-string">'bar'</span>
+  })
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(edge)</span> {</span>
+    console.log(<span class="hljs-string">'created edge:'</span>, edge);
+  });</pre></div>
+          
+          
+          
+          <h3 id="delete">Delete</h3>
+<p>Deleting an edge between vertices</p>
+
+          
+          <div class='highlight'><pre>db.edge.from(<span class="hljs-string">'#12:12'</span>)
+  .to(<span class="hljs-string">'#12:13'</span>)
+  .delete()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(count)</span> {</span>
+    console.log(<span class="hljs-string">'deleted '</span> + count + <span class="hljs-string">' edges'</span>);
+  });</pre></div>
+          
+          
+          
+          <h2 id="query-builder">Query Builder</h2>
+
+          
+          
+          
+          <h3 id="select">Select</h3>
+
+          
+          <div class='highlight'><pre>db.select()
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({status: <span class="hljs-string">'ACTIVE'</span>})
+  .all()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(users)</span> {</span>
+    console.log(<span class="hljs-string">'active users'</span>, users);
+  });</pre></div>
+          
+          
+          
+          <p>Select Records with Fetch Plan</p>
+
+          
+          <div class='highlight'><pre>db.select()
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({status: <span class="hljs-string">'ACTIVE'</span>})
+  .fetch({role: <span class="hljs-number">5</span>})
+  .all()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(users)</span> {</span>
+    console.log(<span class="hljs-string">'active users'</span>, users);
+  });</pre></div>
+          
+          
+          
+          <p>Select an expression</p>
+
+          
+          <div class='highlight'><pre>db.select(<span class="hljs-string">'count(*)'</span>)
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({status: <span class="hljs-string">'ACTIVE'</span>})
+  .scalar()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(total)</span> {</span>
+    console.log(<span class="hljs-string">'total active users'</span>, total);
+  });</pre></div>
+          
+          
+          
+          <p>Return a specific column</p>
+
+          
+          <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({status: <span class="hljs-string">'ACTIVE'</span>})
+  .column(<span class="hljs-string">'name'</span>)
+  .all()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(names)</span> {</span>
+    console.log(<span class="hljs-string">'active user names'</span>, names.join(<span class="hljs-string">', '</span>));
+  });</pre></div>
+          
+          
+          
+          <p>Transform a field</p>
+
+          
+          <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({status: <span class="hljs-string">'ACTIVE'</span>})
+  .transform({
+    status: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(status)</span> {</span>
+      <span class="hljs-keyword">return</span> status.toLowerCase();
+    }
+  })
+  .limit(<span class="hljs-number">1</span>)
+  .one()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(user)</span> {</span>
+    console.log(<span class="hljs-string">'user status: '</span>, user.status); <span class="hljs-comment">// 'active'</span>
+  });</pre></div>
+          
+          
+          
+          <p>Transform a record</p>
+
+          
+          <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({status: <span class="hljs-string">'ACTIVE'</span>})
+  .transform(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(record)</span> {</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> User(record);
+  })
+  .limit(<span class="hljs-number">1</span>)
+  .one()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(user)</span> {</span>
+    console.log(<span class="hljs-string">'user is an instance of User?'</span>, (user <span class="hljs-keyword">instanceof</span> User)); <span class="hljs-comment">// true</span>
+  });</pre></div>
+          
+          
+          
+          <p>Specify default values</p>
+
+          
+          <div class='highlight'><pre>db.select(<span class="hljs-string">'name'</span>)
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({status: <span class="hljs-string">'ACTIVE'</span>})
+  .defaults({
+    something: <span class="hljs-number">123</span>
+  })
+  .limit(<span class="hljs-number">1</span>)
+  .one()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(user)</span> {</span>
+    console.log(user.name, user.something);
+  });</pre></div>
+          
+          
+          
+          <h3 id="traverse">Traverse</h3>
+
+          
+          <div class='highlight'><pre>db.traverse()
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({name: <span class="hljs-string">'guest'</span>})
+  .all()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(records)</span> {</span>
+    console.log(<span class="hljs-string">'found records'</span>, records);
+  });</pre></div>
+          
+          
+          
+          <h3 id="insert">Insert</h3>
+
+          
+          <div class='highlight'><pre>db.insert()
+  .into(<span class="hljs-string">'OUser'</span>)
+  .set({name: <span class="hljs-string">'demo'</span>, password: <span class="hljs-string">'demo'</span>, status: <span class="hljs-string">'ACTIVE'</span>})
+  .one()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(user)</span> {</span>
+    console.log(<span class="hljs-string">'created'</span>, user);
+  });</pre></div>
+          
+          
+          
+          <h3 id="update">Update</h3>
+
+          
+          <div class='highlight'><pre>db.update(<span class="hljs-string">'OUser'</span>)
+  .set({password: <span class="hljs-string">'changed'</span>})
+  .where({name: <span class="hljs-string">'demo'</span>})
+  .scalar()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(total)</span> {</span>
+    console.log(<span class="hljs-string">'updated'</span>, total, <span class="hljs-string">'users'</span>);
+  });</pre></div>
+          
+          
+          
+          <h3 id="delete">Delete</h3>
+
+          
+          <div class='highlight'><pre>db.delete()
+  .from(<span class="hljs-string">'OUser'</span>)
+  .where({name: <span class="hljs-string">'demo'</span>})
+  .limit(<span class="hljs-number">1</span>)
+  .scalar()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(total)</span> {</span>
+    console.log(<span class="hljs-string">'deleted'</span>, total, <span class="hljs-string">'users'</span>);
+  });</pre></div>
+          
+          
+
+          <div class="fleur">h</div>
+          <br/>
+
+          <h2>Contributing</h2>
+
+          <p class="well">
+            Take care to maintain the existing coding style. Add <strong>Enter Unit Testing Framework</strong> unit tests for any new or changed functionality. Lint and test your code using <strong>Enter Build Tool Here</strong>.
+          </p>
+
+          <p class="well">
+            <span class="note">
+              After you have verified your code, send a pull request to the <em>Enter Project Name Here</em> develop branch.  After you send a pull request, you will hear back from me shortly after I review your code.  You’ll find source code in the <code>src</code> subdirectory!
+            </span>
+          </p>
+          <br/>
+
+          <h2>Extending</h2>
+          <p class="well">
+            If you find that you need a feature that <em>Enter Project Name Here</em> does not currently support, either let me know via the <a href="#" target="_blank">Github issue tracker</a>, or <a href="#" target="_blank">fork the project</a> and and easily extend <em>Enter Project Name Here</em>!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/rainbow/rainbow.min.js"></script>
+<script src="js/rainbow/language/generic.js"></script>
+<script src="js/rainbow/language/html.js"></script>
+<script src="js/rainbow/language/css.js"></script>
+<script src="js/rainbow/language/javascript.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.tocify.min.js"></script>
+<script src="js/prettify.js"></script>
+
+<script>
+    $(function() {
+      $("#toc").tocify({ selectors: "h2, h3, h4", scrollTo: 60, highlightOffset: 60, extendPage: true });
+
+      prettyPrint();
+
+      $(".optionName").popover({trigger:"hover", container:"body"});
+
+      $("a[href='#']").click(function(event) {
+          event.preventDefault();
+      });
+
+      Rainbow.color();
+    });
+</script>
+</body>
+</html>

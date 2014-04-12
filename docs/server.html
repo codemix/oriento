@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Server</title>
+    <!-- Mobile viewport optimized -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- Mobile Internet Explorer allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <meta http-equiv="cleartype" content="on">
+
+    <!-- Le styles -->
+    <link href="css/bootswatch/Cosmo/bootstrap.min.css" rel="stylesheet">
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/black-tie/jquery-ui.css" rel="stylesheet">
+    <link href="css/jquery.tocify.css" rel="stylesheet">
+    <link href="css/prettify.css" rel="stylesheet" type="text/css">
+    <link href="css/styles.css" rel="stylesheet" type="text/css">
+    <link href="css/rainbow/themes/tomorrow-night.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/rainbowlines/theme.css" media="screen" />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link href="../assets/ico/favicon.ico" rel="shortcut icon">
+    <link href="../assets/ico/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144">
+    <link href="../assets/ico/apple-touch-icon-114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114">
+    <link href="../assets/ico/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72">
+    <link href="../assets/ico/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon-precomposed">
+  </head>
+
+  <body>
+    <a id="fork-me" href="#" target="_blank"><img style="border: 0px currentColor; border-image: none; top: 0px; right: 0px; position: fixed; z-index: 999999;" alt="Fork me on GitHub" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
+   <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom:120px;">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">Oriento</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+          <li class="divider"></li>
+          <li><a href="#">One more separated link</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+     
+
+    <div class="container-fluid" style="margin-top:50px;">
+      <div class="row">
+        <div class="tocify col-sm-3 col-md-3">
+          <div id="toc">
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="col-sm-9 col-md-9">
+          <div class="jumbotron">
+            <h1>
+                
+                
+                <h1 id="server">Server</h1>
+<p>The methods below will call the server functions. User authentication for the server must first be configured in the
+orientdb-server-config.xml file. See
+<a href="https://github.com/orientechnologies/orientdb/wiki/DB-Server#users">OrientDB Wiki</a>.
+To manipulate the actual database and records, see the
+<a href="https://github.com/nitrog7/node-orientdb/wiki/Document-Database">document database</a> api page. Additional details
+can be found on the [OrientDB wiki]<a href="https://github.com/orientechnologies/orientdb/wiki/Network-Binary-Protocol">https://github.com/orientechnologies/orientdb/wiki/Network-Binary-Protocol</a>) page.</p>
+<h2 id="initialize-the-server">Initialize the Server</h2>
+<p>First, require the library.</p>
+
+                
+                <div class='highlight'><pre><span class="hljs-keyword">var</span> Oriento = <span class="hljs-built_in">require</span>(<span class="hljs-string">'oriento'</span>);</pre></div>
+                
+                
+            </h1>
+          </div>
+
+          
+          
+          <p class="well"><h3 id="basic-configuration">Basic Configuration</h3>
+<p>Now, we call the <code>Oriento</code> function, passing in our connection options.</p>
+</p>
+          
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> server = <span class="hljs-keyword">new</span> Oriento({
+  host: <span class="hljs-string">'localhost'</span>,
+  port: <span class="hljs-number">2424</span>,
+  username: <span class="hljs-string">'root'</span>,
+  password: <span class="hljs-string">'yourpassword'</span>
+});</pre></div>
+          
+          
+          
+          <p class="well"><p><code>server</code> is now an instance of <code>Oriento.Server</code>. it provides methods for creating, listing, dropping and  using
+databases.</p>
+<h3 id="configuring-the-client-to-use-a-connection-pool-">Configuring the client to use a connection pool.</h3>
+<p>By default Oriento uses one socket per server, but it is also possible to use a connection pool.
+You should carefully benchmark this against the default setting for your use case,
+there are scenarios where a connection pool is actually slightly worse for performance than a single connection.</p>
+</p>
+          
+          <div class='highlight'><pre>
+<span class="hljs-keyword">var</span> server = <span class="hljs-keyword">new</span> Oriento({
+  host: <span class="hljs-string">'localhost'</span>,
+  port: <span class="hljs-number">2424</span>,
+  username: <span class="hljs-string">'root'</span>,
+  password: <span class="hljs-string">'yourpassword'</span>,
+  pool: {
+    max: <span class="hljs-number">10</span> <span class="hljs-comment">// 1 by default</span>
+  }
+});</pre></div>
+          
+          
+          
+          <p class="well"><h2 id="methods">Methods</h2>
+<p>The methods are BlueBird promise objects and use the then and error methods for callbacks. Take a look at the
+<a href="https://github.com/petkaantonov/bluebird/blob/master/API.md">Bluebird API</a> for more details.</p>
+</p>
+          
+          <div class='highlight'><pre>
+server.method().then(resultMethod).error(errorMethod);</pre></div>
+          
+          
+          
+          <p class="well"><blockquote>
+<p>Example</p>
+</blockquote>
+</p>
+          
+          <div class='highlight'><pre>server.method()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(results)</span> {</span>
+
+  })
+  .error(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error)</span> {</span>
+
+  });</pre></div>
+          
+          
+          
+          <p class="well"><p>List all the databases on the server.</p>
+<blockquote>
+<p>Note: there is no need to call <code>connect()</code>, the
+connection is established the first time it is needed.</p>
+</blockquote>
+</p>
+          
+          <div class='highlight'><pre>server.list()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(dbs)</span> {</span>
+    console.log(<span class="hljs-string">'Found databases: '</span>, dbs);
+  });</pre></div>
+          
+          
+          
+          <p class="well"><h3 id="creating-a-new-database">Creating a new database</h3>
+</p>
+          
+          <div class='highlight'><pre>server.create({
+  name: <span class="hljs-string">'mydb'</span>,
+  type: <span class="hljs-string">'graph'</span>,
+  storage: <span class="hljs-string">'plocal'</span>
+})
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(db)</span> {</span>
+    console.log(<span class="hljs-string">'Created a database called '</span> + db.name);
+  });</pre></div>
+          
+          
+          <div class="fleur">h</div>
+
+          <br>
+          <h2>Contributing</h2>
+          <p class="well">
+              Take care to maintain the existing coding style. Add <strong>Enter Unit Testing Framework</strong> unit tests for any new or changed functionality. Lint and test your code using <strong>Enter Build Tool Here</strong>.
+          </p>
+          <p class="well">
+              <span class="note">
+                  After you have verified your code, send a pull request to the <em>Enter Project Name Here</em> develop branch.  After you send a pull request, you will hear back from me shortly after I review your code.  You’ll find source code in the <code>src</code> subdirectory!
+              </span>
+          </p>
+          <br>
+          <h2>Extending</h2>
+          <p class="well">
+              If you find that you need a feature that <em>Enter Project Name Here</em> does not currently support, either let me know via the <a href="#" target="_blank">Github issue tracker</a>, or <a href="#" target="_blank">fork the project</a> and and easily extend <em>Enter Project Name Here</em>!
+          </p>
+		  <br>
+		<h2>Copyright</h2>
+        <p class="well">
+            Copyright © 2013 Enter Author Name Here
+        </p>
+      </div>
+      </div><!--/row-->
+          
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/rainbow/rainbow.min.js"></script>
+    <script src="js/rainbow/language/generic.js"></script>
+    <script src="js/rainbow/language/html.js"></script>
+    <script src="js/rainbow/language/css.js"></script>
+    <script src="js/rainbow/language/javascript.js"></script>
+    <script src="js/rainbowlines/rainbow.linenumbers.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.tocify.min.js"></script>
+    <script src="js/prettify.js"></script>
+
+    <script>
+        $(function() {
+
+          $("#toc").tocify({ selectors: "h2, h3, h4", scrollTo: 60, highlightOffset: 60, extendPage: true });
+
+          prettyPrint();
+
+          $(".optionName").popover({ trigger: "hover", container: "body" });
+
+          $("a[href='#']").click(function(event) {
+
+              event.preventDefault();
+
+          });
+
+          Rainbow.color();
+        });
+    </script>
+  
+</div></body></html>
