@@ -54,7 +54,7 @@ npm test
 ```js
 var Oriento =  require('oriento');
 
-var server = new Oriento({
+var server = Oriento({
   host: 'localhost',
   port: 2424,
   username: 'root',
@@ -68,7 +68,7 @@ You should carefully benchmark this against the default setting for your use cas
 there are scenarios where a connection pool is actually slightly worse for performance than a single connection.
 
 ```js
-var server = new Oriento({
+var server = Oriento({
   host: 'localhost',
   port: 2424,
   username: 'root',
