@@ -18,9 +18,9 @@ describe('Query Performance', function() {
   });
 
   describe('Database::query()', function() {
-    var start = new Date().getTime();
+    it('should query the records in GratefulDeadConcerts', function() {
+      var start = new Date().getTime();
 
-    it('should return one record', function() {
       return this.db.query('SELECT FROM V')
         .then(function(records) {
           var end = new Date().getTime();
