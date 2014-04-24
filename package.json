@@ -53,7 +53,8 @@
     "should": "~3.3.1",
     "expect.js": "~0.3.1",
     "istanbul": "~0.2.7",
-    "jshint": "~2.5.0"
+    "jshint": "~2.5.0",
+    "pegjs": "~0.8.0"
   },
   "main": "./lib/index.js",
   "directories": {
@@ -70,7 +71,8 @@
     "test": "echo \"\n\nNOTICE: If tests fail, please ensure you've set the correct credentials in test/test-server.json\n\n\"; node ./node_modules/mocha/bin/mocha ./test/index.js ./test/**/*.js ./test/**/**/*.js ./test/**/**/**/*.js ./test/**/**/**/**/*.js --reporter=spec -t 10000",
     "watch": "node ./node_modules/mocha/bin/mocha ./test/index.js ./test/**/*.js ./test/**/**/*.js ./test/**/**/**/*.js ./test/**/**/**/**/*.js --reporter=spec -t 10000 --watch",
     "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha ./test/index.js ./test/**/*.js ./test/**/**/*.js  ./test/**/**/**/*.js ./test/**/**/**/**/*.js --reporter=spec",
-    "lint": "./node_modules/.bin/jshint ./lib"
+    "lint": "./node_modules/.bin/jshint ./lib",
+    "peg": "./node_modules/pegjs/bin/pegjs ./src/record-parser.pegjs ./lib/transport/binary/protocol/record-parser.js"
   },
   "licenses": [
     {

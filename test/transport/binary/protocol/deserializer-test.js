@@ -1,6 +1,7 @@
 var serializer = LIB.transport.BinaryTransport.protocol.serializer,
     deserializer = LIB.transport.BinaryTransport.protocol.deserializer;
-describe.only('Binary Deserializer', function () {
+
+describe('Binary Deserializer', function () {
 
   var LIMIT = 1000;
 
