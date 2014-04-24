@@ -30,11 +30,9 @@ describe('PegJS Record Parser', function () {
       }
     };
     var serialized = serializer.serializeDocument(input);
-    console.log(serialized);
+    //console.log(serialized);
     var output = parser.parse(serialized);
-    console.log(output);
+    //console.log(output);
     output.should.eql(input);
   });
-
-  it('should parse a ')
 });

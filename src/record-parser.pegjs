@@ -50,6 +50,7 @@ value "Value"
   / set
   / map
   / embedded
+  / twiceQuotedString
   / string
 
 
@@ -162,7 +163,11 @@ zero          = "0"
 
 
 string "string"
-  = quotation_mark chars:char* quotation_mark { return chars.join(""); }
+  = quotation_mark chars:$char* quotation_mark { return chars; }
+
+twiceQuotedString "twice quoted string"
+  = quotation_mark quotation_mark chars:$char* quotation_mark quotation_mark { return chars; }
+
 
 char
   = unescaped
