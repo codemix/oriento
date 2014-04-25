@@ -24,7 +24,7 @@ field "Field"
   }
 
 fieldName "Field Name"
-  = name:(string / $([a-zA-Z][A-Za-z0-9]*)) {
+  = name:$([a-zA-Z][A-Za-z0-9]*) {
     return name;
   }
 
@@ -111,8 +111,26 @@ set "set"
 // ## Maps / Objects
 
 map "map"
-  = "{" fields:fieldList "}" {
+  = "{" fields:propertyList "}" {
     return fields;
+  }
+
+property "property"
+  = name:string ":" value:value? {
+    return [name, value];
+  }
+
+
+propertyList "property list"
+  = head:property tail:(ws "," ws property)* ws {
+    var result = {}, total, i;
+    result[head[0]] = head[1];
+    if ((total = tail.length)) {
+      for (i = 0; i < total; i++) {
+        result[tail[i][3][0]] = tail[i][3][1];
+      }
+    }
+    return result;
   }
 
 // ## Embedded
