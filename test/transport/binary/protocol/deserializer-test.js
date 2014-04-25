@@ -1,6 +1,7 @@
 var serializer = LIB.transport.BinaryTransport.protocol.serializer,
     deserializer = LIB.transport.BinaryTransport.protocol.deserializer,
-    recordParser = LIB.transport.BinaryTransport.protocol.recordParser;
+    recordParser = LIB.transport.BinaryTransport.protocol.recordParser,
+    newDeserializer = require(LIB_ROOT + '/transport/binary/protocol/new-deserializer');
 
 describe('Binary Deserializer', function () {
 
@@ -56,6 +57,7 @@ describe('Binary Deserializer', function () {
     deserialized.should.eql(this.deep);
   });
 
+
   it('should parse a record, using PEG', function () {
     var deserialized = recordParser.parse(this.serializedRecord);
     deserialized.should.eql(this.record);
@@ -63,6 +65,16 @@ describe('Binary Deserializer', function () {
 
   it('should parse a deeply nested record, using PEG', function () {
     var deserialized = recordParser.parse(this.serializedDeep);
+    deserialized.should.eql(this.deep);
+  });
+
+  it('should parse a record, using the new deserializer', function () {
+    var deserialized = newDeserializer.deserialize(this.serializedRecord);
+    deserialized.should.eql(this.record);
+  });
+
+  it('should parse a deeply nested record, using the new deserializer', function () {
+    var deserialized = newDeserializer.deserialize(this.serializedDeep);
     deserialized.should.eql(this.deep);
   });
 
@@ -98,6 +110,22 @@ describe('Binary Deserializer', function () {
 
   });
 
+  it('should parse individual records quickly, using the new deserializer', function () {
+    var limit = 1000,
+        size = this.serializedRecord.length * limit,
+        start = Date.now();
+
+    for (var i = 0; i < limit; i++) {
+      newDeserializer.deserialize(this.serializedRecord);
+    }
+
+    var stop = Date.now(),
+        total = (stop - start) / 1000;
+
+    console.log('New Deserializer Done in ' + total + 's, ', (limit / total).toFixed(3), 'documents / sec', (((size / total) / 1024) / 1024).toFixed(3), ' Mb / sec')
+
+  });
+
   it('should parse large nested records quickly', function () {
     var limit = 100,
         size = this.serializedDeep.length * limit,
@@ -127,6 +155,22 @@ describe('Binary Deserializer', function () {
         total = (stop - start) / 1000;
 
     console.log('PEG Done in ' + total + 's, ', (limit / total).toFixed(3), 'documents / sec', (((size / total) / 1024) / 1024).toFixed(3), ' Mb / sec')
+
+  });
+
+  it('should parse large nested records quickly, using the new deserializer', function () {
+    var limit = 100,
+        size = this.serializedDeep.length * limit,
+        start = Date.now();
+
+    for (var i = 0; i < limit; i++) {
+      newDeserializer.deserialize(this.serializedDeep);
+    }
+
+    var stop = Date.now(),
+        total = (stop - start) / 1000;
+
+    console.log('New Deserializer Done in ' + total + 's, ', (limit / total).toFixed(3), 'documents / sec', (((size / total) / 1024) / 1024).toFixed(3), ' Mb / sec')
 
   });
 });
