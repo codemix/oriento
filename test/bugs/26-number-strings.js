@@ -3,15 +3,17 @@
 
 describe('Bug #26: Issue while adding IP as a value to a Vertex', function () {
   before(function () {
-    return CREATE_TEST_DB(this, 'testdb_bug_26')
-      .bind(this)
+    var self = this;
+
+    return CREATE_TEST_DB(self, 'testdb_bug_26')
       .then(function () {
-        return this.db.class.create('Host');
+        return self.db.class.create('Host');
       })
       .then(function (item) {
-        this.class = item;
+        self.class = item;
       });
   });
+
   after(function () {
     return DELETE_TEST_DB('testdb_bug_26');
   });

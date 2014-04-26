@@ -32,7 +32,7 @@
     "asi"           : false,
     "boss"          : false,
     "debug"         : false,
-    "eqnull"        : false,
+    "eqnull"        : true,
     "esnext"        : false,
     "moz"           : false,
 

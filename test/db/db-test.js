@@ -1,17 +1,17 @@
 'use strict';
-
 /* global before, after, TEST_SERVER */
 
 describe('Database API', function() {
   before(function() {
+    var self = this;
+
     return TEST_SERVER.create({
       name: 'testdb_dbapi',
       type: 'graph',
       storage: 'memory'
     })
-      .bind(this)
       .then(function(db) {
-        this.db = db;
+        self.db = db;
       });
   });
   after(function() {

@@ -1,6 +1,9 @@
+'use strict';
+/* global before, after, LIB, CREATE_TEST_DB, DELETE_TEST_DB */
+
 var createdRID, demoRID1, demoRID2;
 
-describe("Database API - Record", function () {
+describe('Database API - Record', function () {
   before(function () {
     return CREATE_TEST_DB(this, 'testdb_dbapi_record')
     .bind(this)
@@ -11,11 +14,11 @@ describe("Database API - Record", function () {
       return OUser.property.create({
         name: 'linkedTest1',
         type: 'Link'
-      })
+      });
     });
   });
   after(function () {
-    return DELETE_TEST_DB('testdb_dbapi_record')
+    return DELETE_TEST_DB('testdb_dbapi_record');
   });
 
   describe('Db::record.get()', function () {
@@ -62,8 +65,8 @@ describe("Database API - Record", function () {
         name: 'othertestuser',
         password: 'testpassword',
         status: 'ACTIVE',
-        linkedTest1: "#5:0", // defined link field
-        linkedTest2: "#5:1" // dynamic field
+        linkedTest1: '#5:0', // defined link field
+        linkedTest2: '#5:1' // dynamic field
       })
       .bind(this)
       .then(function (obj) {
@@ -84,8 +87,8 @@ describe("Database API - Record", function () {
         name: 'othertestuser2',
         password: 'testpassword',
         status: 'ACTIVE',
-        linkedTest1: new LIB.RID("#5:0"), // defined field
-        linkedTest2: new LIB.RID("#5:1") // dynamic field
+        linkedTest1: new LIB.RID('#5:0'), // defined field
+        linkedTest2: new LIB.RID('#5:1') // dynamic field
       })
       .bind(this)
       .then(function (obj) {
@@ -114,10 +117,10 @@ describe("Database API - Record", function () {
       .bind(this)
       .then(function (record) {
         record.wat = 'foo';
-        return this.db.record.update(record)
+        return this.db.record.update(record);
       })
       .then(function (record) {
-        // refresh
+        // Refresh
         return this.db.record.get(demoRID1);
       })
       .then(function (record) {
@@ -130,15 +133,16 @@ describe("Database API - Record", function () {
     });
 
     it('should update a record with a dynamic linked field, with RIDs', function () {
-      return this.db.record.get(demoRID2)
-      .bind(this)
+      var self = this;
+
+      return self.db.record.get(demoRID2)
       .then(function (record) {
         record.wat = 'foo';
-        return this.db.record.update(record)
+        return self.db.record.update(record);
       })
       .then(function (record) {
         // refresh
-        return this.db.record.get(demoRID2);
+        return self.db.record.get(demoRID2);
       })
       .then(function (record) {
         record.name.should.equal('othertestuser2');
@@ -147,8 +151,6 @@ describe("Database API - Record", function () {
         record.linkedTest2.should.be.an.instanceOf(LIB.RID); // a real link
       });
     });
-
-
   });
 
   describe('Db::record.meta()', function () {
@@ -165,7 +167,4 @@ describe("Database API - Record", function () {
       return this.db.record.delete(createdRID);
     });
   });
-
-
-
 });

@@ -5,15 +5,17 @@ var Class = require('../../lib/db/class');
 
 describe('Database API - Class - Property', function() {
   before(function() {
-    return CREATE_TEST_DB(this, 'testdb_dbapi_property')
-      .bind(this)
+    var self = this;
+
+    return CREATE_TEST_DB(self, 'testdb_dbapi_property')
       .then(function() {
-        return this.db.class.get('OUser');
+        return self.db.class.get('OUser');
       })
       .then(function(item) {
-        this.class = item;
+        self.class = item;
       });
   });
+
   after(function() {
     return DELETE_TEST_DB('testdb_dbapi_property');
   });
@@ -77,11 +79,9 @@ describe('Database API - Class - Property', function() {
     it('should alter a property with the given name', function() {
       return this.class.property.alter('myprop', 'NAME myprop2')
         .then(function(item) {
-          console.log('item1', item);
           return item.property.get('myprop2');
         })
         .then(function(item) {
-          console.log('item2', item);
           item.name.should.equal('myprop2');
         });
     });

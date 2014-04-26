@@ -3,15 +3,17 @@
 
 describe('Bug #25: Create undefined in Myclass.property.create', function () {
   before(function () {
-    return CREATE_TEST_DB(this, 'testdb_bug_25')
-      .bind(this)
+    var self = this;
+
+    return CREATE_TEST_DB(self, 'testdb_bug_25')
       .then(function () {
-        return this.db.class.create('Member', 'V');
+        return self.db.class.create('Member', 'V');
       })
       .then(function (item) {
-        this.class = item;
+        self.class = item;
       });
   });
+
   after(function () {
     return DELETE_TEST_DB('testdb_bug_25');
   });
