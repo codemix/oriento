@@ -74,7 +74,7 @@ describe("RID Bag", function () {
       var contents = this.bag.all();
       contents.length.should.equal(10);
       contents.forEach(function (item) {
-        item.should.be.an.instanceOf(LIB.RID);
+        item.should.have.property('@rid');
       });
     });
 
@@ -83,7 +83,19 @@ describe("RID Bag", function () {
           decoded = JSON.parse(json);
       decoded.length.should.equal(10);
       decoded.forEach(function (item) {
-        (typeof item).should.equal('string');
+        item.should.have.property('@rid');
+      });
+    });
+
+    describe('Optional RIDBags', function () {
+      before(function () {
+        this.db.server.transport.connection.protocol.deserializer.enableRIDBags = false;
+      });
+      after(function () {
+        this.db.server.transport.connection.protocol.deserializer.enableRIDBags = true;
+      });
+      it('should optionally disable RIDBags', function () {
+        Array.isArray(this.bag).should.be.true;
       });
     });
   });
@@ -146,7 +158,10 @@ describe("RID Bag", function () {
       this.bag.should.be.an.instanceOf(LIB.Bag)
       this.bag.type.should.equal(LIB.Bag.BAG_TREE);
       expect(this.bag.uuid).to.equal(null);
-      this.bag.size.should.equal(120);
+      // > note: following behavior changes since protocol 19
+      // old versions return the number of records, newer ones don't.
+      // newer versions must ask orient
+      expect(this.bag.size === -1 || this.bag.size === 120).to.be.true;
     });
   });
 });

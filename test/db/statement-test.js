@@ -124,6 +124,16 @@ COMMIT \n\
       .should
       .equal('BEGIN\n LET names = UPDATE OUser SET name = "name"\n \nCOMMIT \n RETURN $names');
     });
+    it('should generate an update transaction, with returns and a return clause before while', function () {
+      var sub = (new Statement(this.db)).update('OUser').set({name: 'name'}).return('COUNT');
+      this.statement
+      .let('names', sub)
+      .commit()
+      .return('$names')
+      .toString()
+      .should
+      .equal('BEGIN\n LET names = UPDATE OUser SET name = "name" RETURN COUNT\n \nCOMMIT \n RETURN $names');
+    });
   });
 
   describe('Statement::select()', function () {
@@ -180,6 +190,16 @@ COMMIT \n\
       this.statement.select().from('(SELECT * FROM OUser)');
       this.statement.buildStatement().should.equal('SELECT * FROM (SELECT * FROM OUser)');
     });
+    it('should select from a subquery', function () {
+      this.statement.select().from((new Statement(this.db).select().from('OUser')));
+      this.statement.buildStatement().should.equal('SELECT * FROM (SELECT * FROM OUser)');
+    });
+    it('should select from a subquery, using a function', function () {
+      this.statement.select().from(function (s) {
+        s.select().from('OUser');
+      });
+      this.statement.buildStatement().should.equal('SELECT * FROM (SELECT * FROM OUser)');
+    });
   });
 
   describe('Statement::to()', function () {
@@ -190,6 +210,21 @@ COMMIT \n\
     it('should create an edge from a record id to a record id', function () {
       this.statement.create('EDGE', 'E').from(LIB.RID('#5:0')).to(LIB.RID('#22:310540'));
       this.statement.buildStatement().should.equal('CREATE EDGE E FROM #5:0 TO #22:310540');
+    });
+  });
+
+  describe('Statement::return()', function () {
+    it('should build a return clause', function () {
+      this.statement.update('#1:1').set({foo: 'bar', greeting: 'hello world'}).return('AFTER');
+      this.statement.buildStatement().should.equal('UPDATE #1:1 SET foo = :paramfoo0, greeting = :paramgreeting1 RETURN AFTER');
+    });
+    it('should build a return clause before the where clause', function () {
+      this.statement.delete().from('OUser').return('BEFORE').where({foo: 'bar', greeting: 'hello world'});
+      this.statement.buildStatement().should.equal('DELETE FROM OUser RETURN BEFORE WHERE (foo = :paramfoo0 AND greeting = :paramgreeting1)');
+    });
+    it('should build a return clause after the insert query', function () {
+      this.statement.insert().into('OUser').set({foo: 'bar', greeting: 'hello world'}).return('AFTER');
+      this.statement.buildStatement().should.equal('INSERT INTO OUser SET foo = :paramfoo0, greeting = :paramgreeting1 RETURN AFTER');
     });
   });
 
@@ -257,5 +292,5 @@ COMMIT \n\
       this.statement.update('OUser').set("foo = 'bar'").upsert('1 = 1');
       this.statement.buildStatement().should.equal("UPDATE OUser SET foo = 'bar' UPSERT WHERE 1 = 1");
     });
-  })
+  });
 });
