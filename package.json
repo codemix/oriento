@@ -44,9 +44,8 @@
     "url": "http://github.com/codemix/oriento.git"
   },
   "dependencies": {
-    "bluebird": "~1.2.3",
-    "request": "~2.34.0",
-    "yargs": "~1.2.1"
+    "bluebird": "^2.4.2",
+    "yargs": "^1.3.3"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
