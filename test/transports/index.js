@@ -79,9 +79,9 @@ function run (transportName) {
           });
         });
 
-        describe('command()', function () {
+        describe('query()', function () {
           it('should execute a scalar query', function () {
-            return db.command({
+            return db.query({
               query: 'SELECT COUNT(*) FROM OUser'
             })
             .then(response => {
@@ -90,11 +90,10 @@ function run (transportName) {
           });
 
           it('should execute a query', function () {
-            return db.command({
+            return db.query({
               query: 'SELECT FROM OUser'
             })
             .then(response => {
-              //console.log(transportName, JSON.stringify(response, null, 2));
               response['@type'].should.equal('orient:Collection');
               response['@value'].length.should.be.above(0);
               response['@value'].forEach(result => {
@@ -105,7 +104,7 @@ function run (transportName) {
           });
 
           it('should execute a query with a fetch plan', function () {
-            return db.command({
+            return db.query({
               query: 'SELECT FROM OUser',
               fetchPlan: 'roles:1'
             })
@@ -131,6 +130,34 @@ function run (transportName) {
               });
             });
           });
+        });
+
+        describe('exec()', function () {
+          it('should insert a document', function () {
+            return db.exec({
+              query: 'INSERT INTO OUser SET name = "charles", status = "ACTIVE", password = "no"'
+            })
+            .then(response => {
+              response['@type'].should.equal('orient:Collection');
+              response['@value'].length.should.be.above(0);
+              response['@value'].forEach(result => {
+                result['@type'].should.equal('db:OUser');
+                Object.keys(result['@value']).length.should.be.above(0);
+              });
+            });
+          });
+
+          it('should update a document', function () {
+            return db.exec({
+              query: 'UPDATE OUser SET password = "nope" WHERE name = "charles"'
+            })
+            .then(response => {
+              response['@type'].should.equal('orient:Collection');
+              response['@value'].length.should.equal(1);
+              response['@value'][0]['@value'].should.equal(1);
+            });
+          });
+
         });
       });
 

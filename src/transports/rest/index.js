@@ -187,13 +187,37 @@ class RESTTransport extends AbstractTransport {
   }
 
   /**
+   * Execute a query against the database.
+   * @param   {Object} options The options for the query.
+   * @promise {Object}         The query result.
+   */
+  query (options) {
+    if (!this[state].database) {
+      throw new Error('Cannot call `query()` without being connected to a database.');
+    }
+    let normalized = {
+      class: options.class || 'q',
+      language: options.language || 'sql',
+      query: encodeURIComponent(options.query + (options.fetchPlan ? ' FETCHPLAN ' + options.fetchPlan : '')),
+      limit: options.limit || -1,
+      params: options.params
+    };
+    let url = `command/${this[state].database}/${normalized.language}`;
+    url += `/${normalized.query}/${normalized.limit}`;
+    return send(this, {
+      url: url,
+      method: 'GET'
+    });
+  }
+
+  /**
    * Execute a command against the database.
    * @param   {Object} options The options for the command.
    * @promise {Object}         The command result.
    */
-  command (options) {
+  exec (options) {
     if (!this[state].database) {
-      throw new Error('Cannot call `command()` without being connected to a database.');
+      throw new Error('Cannot call `exec()` without being connected to a database.');
     }
     let normalized = {
       class: options.class || 'q',
@@ -209,6 +233,7 @@ class RESTTransport extends AbstractTransport {
       method: 'POST'
     });
   }
+
 
   /**
    * Close the connection(s) to the server or database.

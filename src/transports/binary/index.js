@@ -158,16 +158,36 @@ class BinaryTransport extends AbstractTransport {
   }
 
   /**
+   * Execute a query against the database.
+   * @param   {Object} options The options for the query.
+   * @promise {Object}         The query result.
+   */
+  query (options) {
+    if (!this[state].database) {
+      throw new Error('Cannot call `query()` without being connected to a database.');
+    }
+    let normalized = {
+      class: options.class || 'q',
+      language: options.language || 'sql',
+      query: options.query,
+      limit: options.limit,
+      fetchPlan: options.fetchPlan,
+      params: options.params
+    };
+    return acquireAndSend(this, 'Command', normalized);
+  }
+
+  /**
    * Execute a command against the database.
    * @param   {Object} options The options for the command.
    * @promise {Object}         The command result.
    */
-  command (options) {
+  exec (options) {
     if (!this[state].database) {
-      throw new Error('Cannot call `command()` without being connected to a database.');
+      throw new Error('Cannot call `exec()` without being connected to a database.');
     }
     let normalized = {
-      class: options.class || 'q',
+      class: options.class || 'c',
       language: options.language || 'sql',
       query: options.query,
       limit: options.limit,

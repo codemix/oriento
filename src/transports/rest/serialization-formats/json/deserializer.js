@@ -93,7 +93,10 @@ export default function create (/*options*/) {
   }
 
   function normalize (input) {
-    if (!Array.isArray(input.result)) {
+    if (input.value) {
+      return input.value;
+    }
+    else if (!Array.isArray(input.result)) {
       return input;
     }
     let records = [];
@@ -133,6 +136,17 @@ export default function create (/*options*/) {
     }
     let copied = {},
         subject, target;
+
+    if (input['@type'] === 'orient:Document' &&
+       !input['@rid'] &&
+       input['@value'] &&
+       input['@value'].value !== undefined
+    ) {
+      return {
+        '@type': 'orient:FlatRecord',
+        '@value': input['@value'].value
+      };
+    }
     if (input['@value']) {
       for (let key in input) {
         if (key !== '@value' && key !== '@fieldTypes') {

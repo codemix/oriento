@@ -554,6 +554,21 @@ export default function create (options) {
         if (data.results.length === 1 && data.results[0]['@type'] === 'orient:Collection') {
           return data.results[0];
         }
+        else if (data.results.length === 1 &&
+          data.results[0]['@type'] === 'orient:Record' &&
+          data.results[0]['@value']
+        ) {
+          return {
+            '@type': 'orient:Collection',
+            '@value': [data.results[0]['@value']]
+          };
+        }
+        else if (data.results.length === 1) {
+          return {
+            '@type': 'orient:Collection',
+            '@value': data.results
+          };
+        }
         else {
           return {
             '@type': 'orient:ResultSet',

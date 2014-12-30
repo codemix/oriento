@@ -11,11 +11,16 @@ export default function create (options) {
    * @return {Object}       The deserialized record.
    */
   function deserialize (input) {
-    var record = {},
-        chunk, key, value;
     if (!input) {
       return null;
     }
+    let c = input.charCodeAt(0);
+    if (c >= 48 && c <= 57 ) {
+      return eatValue(input)[0];
+    }
+
+    var record = {},
+        chunk, key, value;
     chunk = eatFirstKey(input);
     if (chunk[2]) {
       // this is actually a class name
