@@ -1,0 +1,2 @@
+import Oriento from '../src';
+

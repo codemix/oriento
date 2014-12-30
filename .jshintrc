@@ -2,7 +2,7 @@
     "maxerr"        : 50,
 
     "bitwise"       : false,
-    "camelcase"     : true,
+    "camelcase"     : false,
     "curly"         : true,
     "eqeqeq"        : false,
     "forin"         : true,
@@ -16,8 +16,8 @@
     "plusplus"      : false,
     "quotmark"      : false,
     "undef"         : true,
-    "unused"        : false, // $scope variables are often created but not read in js files
-    "strict"        : true,
+    "unused"        : true, // $scope variables are often created but not read in js files
+    "strict"        : false,
     "devel"         : true,
     "node"          : true,
     "maxlen"        :120,
@@ -33,10 +33,10 @@
     "boss"          : false,
     "debug"         : false,
     "eqnull"        : true,
-    "esnext"        : false,
+    "esnext"        : true,
     "moz"           : false,
 
-    "evil"          : false,
+    "evil"          : true,
     "expr"          : false,
     "funcscope"     : false,
     "globalstrict"  : true,
@@ -45,7 +45,7 @@
     "laxbreak"      : false,
     "laxcomma"      : false,
     "loopfunc"      : true,
-    "multistr"      : false,
+    "multistr"      : true,
     "proto"         : false,
     "scripturl"     : false,
     "smarttabs"     : false,
@@ -65,15 +65,17 @@
     "worker"        : false,
     "wsh"           : false,
     "yui"           : false,
-    "predef"        : ["-Promise"],
+    "predef"        : ["-Promise", "-confirm"],
     "globals"       : {
       "angular"     : false,
       "$"           : false,
       "sinon"       : false,
-      "describe"    : false,
-      "beforeEach"  : false,
+      "describe"    : true,
+      "beforeEach"  : true,
       "inject"      : false,
-      "it"          : false,
-      "expect"      : false
+      "it"          : true,
+      "expect"      : true,
+      "app"         : true,
+      "CONFIG"      : true
     }
 }
