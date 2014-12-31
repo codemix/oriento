@@ -345,15 +345,13 @@ export default function create (options) {
         // this is  a linkset
         set = new LinkSet();
       }
-      else {
+      else if (first) {
         set = new EmbeddedSet();
       }
       first = false;
       set.add(chunk[0]);
       input = chunk[1];
-
     }
-
     return [set || new EmbeddedSet(), input];
   }
 

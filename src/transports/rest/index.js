@@ -1,12 +1,9 @@
 import AbstractTransport from '../abstract';
-import {NotImplementedError, RequestError} from '../../errors';
+import {NotImplementedError} from '../../errors';
 import Bluebird from 'bluebird';
-import request from 'request';
-import {createJSON as createJSONFormat} from './serialization-formats';
+import Connection from './connection';
 
 import {state} from '../symbols';
-
-const makeRequest = Bluebird.promisify(request);
 
 const DEFAULT_HOST = 'localhost';
 const DEFAULT_PORT = 2480;
@@ -28,12 +25,9 @@ class RESTTransport extends AbstractTransport {
       password: options.password,
       useToken: options.useToken,
       database: options.database,
+      connection: options.connection,
       token: options.token || null
     };
-
-    let format = createJSONFormat({}); // @fixme classes!
-    this.serialize = format.serialize;
-    this.deserialize = format.deserialize;
   }
 
   /**
@@ -195,6 +189,11 @@ class RESTTransport extends AbstractTransport {
     if (!this[state].database) {
       throw new Error('Cannot call `query()` without being connected to a database.');
     }
+    if (typeof options === 'string') {
+      options = {
+        query: options
+      };
+    }
     let normalized = {
       class: options.class || 'q',
       language: options.language || 'sql',
@@ -219,6 +218,11 @@ class RESTTransport extends AbstractTransport {
     if (!this[state].database) {
       throw new Error('Cannot call `exec()` without being connected to a database.');
     }
+    if (typeof options === 'string') {
+      options = {
+        query: options
+      };
+    }
     let normalized = {
       class: options.class || 'q',
       language: options.language || 'sql',
@@ -234,6 +238,35 @@ class RESTTransport extends AbstractTransport {
     });
   }
 
+
+  /**
+   * Execute a script command.
+   *
+   * @param   {String} language The language to use, e.g. 'sql'.
+   * @param   {String} source   The script source.
+   * @param   {Object} params   The parameters for the script.
+   * @promise {Object}          The script result.
+   */
+  script (language, source, params = {}) {
+    if (!this[state].database) {
+      throw new Error('Cannot call `reloadDatabase()` without being connected to a database.');
+    }
+    return send(this, {
+      url: `batch/${this[state].database}`,
+      method: 'POST',
+      body: {
+        transaction: true,
+        operations: [
+          {
+            type: 'script',
+            language: language,
+            script: source,
+            params: params
+          }
+        ]
+      }
+    });
+  }
 
   /**
    * Close the connection(s) to the server or database.
@@ -254,25 +287,72 @@ export default RESTTransport;
 RESTTransport.aliases = ['remote'];
 
 function send (transport, config = {}) {
-  return makeRequest({
-    url: transport.baseURL + config.url,
-    method: config.method || 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: config.body ? transport.serialize(config.body) : undefined,
-    auth: {
-      username: transport.username,
-      password: transport.password
-    }
-  })
-  .spread((response, json) => {
-    if (response.statusCode > 399) {
-      return Bluebird.reject(new RequestError(json));
-    }
-    else {
-      return json ? transport.deserialize(json) : true;
-    }
-  });
+  if (!transport[state].connection) {
+    transport[state].connection = new Connection(transport);
+    transport[state].connection.on('ready', (status) => {
+      if (status) {
+        transport.emit('metadata', normalizeDatabaseInfo(status));
+      }
+    });
+  }
+
+  return transport[state].connection.send(config);
+}
+
+
+function normalizeDatabaseInfo (input) {
+  return {
+    clusters: input.clusters.map(normalizeCluster),
+    classes: input.classes.map(normalizeClass),
+    indices: input.indexes.map(normalizeIndex)
+  };
+}
+
+function normalizeCluster (input) {
+  return {
+    '@type': 'orient:Cluster',
+    id: input.id,
+    name: input.name
+  };
+}
+
+function normalizeClass (input) {
+  return {
+    '@type': 'orient:Class',
+    name: input.name,
+    superClass: input.superClass || null,
+    alias: input.alias || null,
+    abstract: input.abstract,
+    strictMode: input.strictmode,
+    defaultClusterId: input.defaultCluster,
+    clusterIds: input.clusters,
+    records: input.records,
+    properties: input.properties ? input.properties.map(normalizeProperty) : []
+  };
+}
+
+function normalizeProperty (input) {
+  return {
+    '@type': 'orient:Property',
+    name: input.name,
+    type: input.type,
+    mandatory: input.mandatory,
+    readOnly: input.readonly,
+    notNull: input.notNull,
+    linkedClass: input.linkedClass,
+    linkedType: input.linkedType,
+    collate: input.collate,
+    min: input.min,
+    max: input.max
+  };
+}
+
+function normalizeIndex (input) {
+  return {
+    '@type': 'orient:Index',
+    name: input.name,
+    type: input.configuration['@value'].type,
+    className: input.configuration['@value'].indexDefinition['@value'].className,
+    propertyName: input.configuration['@value'].indexDefinition['@value'].field
+  };
 }

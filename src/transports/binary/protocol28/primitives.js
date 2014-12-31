@@ -167,7 +167,12 @@ export default function create (options) {
       });
     },
     write: function (value) {
-      this.Bytes(new Buffer(value, 'utf8'));
+      if (value == null) {
+        this.Integer(-1);
+      }
+      else {
+        this.Bytes(new Buffer(value, 'utf8'));
+      }
     }
   };
 

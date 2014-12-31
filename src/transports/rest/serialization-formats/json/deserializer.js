@@ -12,12 +12,8 @@ export default function create (/*options*/) {
     b: function parseBinary (value) {
       return value;
     },
-    a: function parseDate (value) {
-      return new Date(value);
-    },
-    t: function parseDateTime (value) {
-      return new Date(value);
-    },
+    a: dateStringToUTC,
+    t: dateStringToUTC,
     e: function parseSet (value) {
       return new EmbeddedSet(value);
     },
@@ -45,6 +41,14 @@ export default function create (/*options*/) {
       };
     }
   };
+
+  function dateStringToUTC (input) {
+    let parts = /^(\d{4})-(\d{2})-(\d{2})(\s(\d{2}):(\d{2}):(\d{2}))?$/.exec(input);
+    if (!parts) {
+      throw new Error('Invalid Date: ' + input);
+    }
+    return new Date(Date.UTC(parts[1], parts[2] - 1, parts[3], parts[5], parts[6], parts[7]));
+  }
 
   function reviver (key, value) {
     if (key === '@rid') {

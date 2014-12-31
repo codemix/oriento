@@ -1,4 +1,5 @@
 import AbstractTransport from '../abstract';
+import Bluebird from 'bluebird';
 import Connection from './connection';
 import {state} from '../symbols';
 
@@ -166,6 +167,11 @@ class BinaryTransport extends AbstractTransport {
     if (!this[state].database) {
       throw new Error('Cannot call `query()` without being connected to a database.');
     }
+    if (typeof options === 'string') {
+      options = {
+        query: options
+      };
+    }
     let normalized = {
       class: options.class || 'q',
       language: options.language || 'sql',
@@ -186,6 +192,11 @@ class BinaryTransport extends AbstractTransport {
     if (!this[state].database) {
       throw new Error('Cannot call `exec()` without being connected to a database.');
     }
+    if (typeof options === 'string') {
+      options = {
+        query: options
+      };
+    }
     let normalized = {
       class: options.class || 'c',
       language: options.language || 'sql',
@@ -193,6 +204,27 @@ class BinaryTransport extends AbstractTransport {
       limit: options.limit,
       fetchPlan: options.fetchPlan,
       params: options.params
+    };
+    return acquireAndSend(this, 'Command', normalized);
+  }
+
+  /**
+   * Execute a script command.
+   *
+   * @param   {String} language The language to use, e.g. 'sql'.
+   * @param   {String} source   The script source.
+   * @param   {Object} params   The parameters for the script.
+   * @promise {Object}          The script result.
+   */
+  script (language, source, params = {}) {
+    if (!this[state].database) {
+      throw new Error('Cannot call `script()` without being connected to a database.');
+    }
+    let normalized = {
+      class: 's',
+      language: language,
+      query: source,
+      params: params
     };
     return acquireAndSend(this, 'Command', normalized);
   }
@@ -241,11 +273,102 @@ function acquireAndSend (transport, commandName, data = {}) {
 
 function createConnection (transport) {
   let connection = new Connection(transport);
+  connection.on('ready', (response) => {
+    if (transport.database) {
+      let clusters = [];
+      for (let name in response.clusters) { /* jshint ignore: line */
+        clusters.push(normalizeCluster(response.clusters[name]));
+      }
+      fetchMetadata(transport, clusters);
+    }
+  });
   connection.once('error', error => {
     let connections = transport[state].connections;
     let index = connections.indexOf(connection);
     transport[index] = null;
-    console.error(error);
+    connection.removeAllListeners();
+    console.error(error.stack || error);
   });
   return connection;
 }
+
+
+function fetchMetadata (transport, clusters) {
+
+  return Bluebird.all([
+    transport.query('SELECT FROM metadata:schema'),
+    transport.query('SELECT FROM #0:2')
+  ])
+  .then(response => {
+    let schema = response[0]['@value'][0]['@value'].classes;
+    let indices = response[1]['@value'][0]['@value'].indexes;
+    transport.emit('metadata', normalizeSchema(schema, clusters, indices));
+  });
+}
+
+function normalizeCluster (input) {
+  return {
+    '@type': 'orient:Cluster',
+    id: input.id,
+    name: input.name
+  };
+}
+
+function normalizeSchema (classes, clusters, indices) {
+  return {
+    clusters: clusters,
+    classes: map(classes, normalizeClass),
+    indices: map(indices, normalizeIndex)
+  };
+}
+
+function normalizeClass (input) {
+  return {
+    '@type': 'orient:Class',
+    name: input.name,
+    superClass: input.superClass || null,
+    alias: input.alias || null,
+    abstract: input.abstract,
+    strictMode: input.strictMode,
+    defaultClusterId: input.defaultCluster,
+    clusterIds: input.clusters,
+    records: input.records,
+    properties: input.properties ? map(input.properties, normalizeProperty) : []
+  };
+}
+
+function normalizeProperty (input) {
+  return {
+    '@type': 'orient:Property',
+    name: input.name,
+    type: input.type,
+    mandatory: input.mandatory,
+    readOnly: input.readonly,
+    notNull: input.notNull,
+    linkedClass: input.linkedClass,
+    linkedType: input.linkedType,
+    collate: input.collate,
+    regexp: input.regexp,
+    min: input.min,
+    max: input.max
+  };
+}
+
+function normalizeIndex (input) {
+  return {
+    '@type': 'orient:Index',
+    name: input.name,
+    type: input.type,
+    className: input.indexDefinition.className,
+    propertyName: input.indexDefinition.field
+  };
+}
+
+function map (input, fn) {
+  let values = [];
+  for (let item of input.values()) {
+    values.push(fn(item));
+  }
+  return values;
+}
+

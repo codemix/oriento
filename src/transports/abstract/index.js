@@ -1,6 +1,7 @@
+import {EventEmitter} from 'events';
 import {state} from '../symbols';
 
-export default class AbstractTransport {
+export default class AbstractTransport extends EventEmitter {
   /**
    * The hostname / IP address of the OrientDB server.
    * @type {String}
