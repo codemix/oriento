@@ -22,7 +22,7 @@ function run (transportName) {
     });
 
     describe('Server', function () {
-      describe('createDatabase()', function () {
+      describe('::createDatabase()', function () {
         it('should create a new database', function () {
           return server.createDatabase('test_'+transportName+'_transport', 'memory')
           .then(response => {
@@ -30,7 +30,7 @@ function run (transportName) {
           });
         });
       });
-      describe('listDatabases()', function () {
+      describe('::listDatabases()', function () {
         it('should list the databases on the server', function () {
           return server.listDatabases()
           .then(response => {
@@ -38,7 +38,7 @@ function run (transportName) {
           });
         });
       });
-      describe('hasDatabase()', function () {
+      describe('::hasDatabase()', function () {
         it('should return true for existing databases', function () {
           return server.hasDatabase('test_'+transportName+'_transport')
           .then(response => {
@@ -47,7 +47,7 @@ function run (transportName) {
         });
       });
 
-      describe('freezeDatabase()', function () {
+      describe('::freezeDatabase()', function () {
         it('should freeze the database', function () {
           return server.freezeDatabase('test_'+transportName+'_transport')
           .then(result => {
@@ -57,7 +57,7 @@ function run (transportName) {
         });
       });
 
-      describe('releaseDatabase()', function () {
+      describe('::releaseDatabase()', function () {
         it('should release the database', function () {
           return server.releaseDatabase('test_'+transportName+'_transport')
           .then(result => {
@@ -156,13 +156,13 @@ function run (transportName) {
           });
         });
 
-        describe('query()', function () {
+        describe('::query()', function () {
           it('should execute a scalar query', function () {
             return db.query({
               query: 'SELECT COUNT(*) FROM OUser'
             })
             .then(response => {
-              response['@value'][0].COUNT.should.be.above(0);
+              response[0].COUNT.should.be.above(0);
             });
           });
 
@@ -171,10 +171,9 @@ function run (transportName) {
               query: 'SELECT FROM OUser'
             })
             .then(response => {
-              //console.log(JSON.stringify(response, null, 2));
               response['@type'].should.equal('orient:Collection');
-              response['@value'].length.should.be.above(0);
-              response['@value'].forEach(result => {
+              response.length.should.be.above(0);
+              response.forEach(result => {
                 result['@type'].should.equal('db:OUser');
                 Object.keys(result).length.should.be.above(0);
               });
@@ -191,8 +190,8 @@ function run (transportName) {
               response['@graph'].forEach((result, i) => {
                 if (i === 0) {
                   result['@type'].should.equal('orient:Collection');
-                  result['@value'].length.should.be.above(0);
-                  result['@value'].forEach(item => {
+                  result.length.should.be.above(0);
+                  result.forEach(item => {
                     item.should.be.an.instanceOf(RID);
                   });
                 }
@@ -227,7 +226,7 @@ function run (transportName) {
             })
             .then(response => {
               response['@type'].should.equal('orient:Collection');
-              let record = response['@value'][0];
+              let record = response[0];
               //console.log(record);
               record.name.should.equal('test');
               record.boolean.should.equal(true);
@@ -281,15 +280,15 @@ function run (transportName) {
 
         });
 
-        describe('exec()', function () {
+        describe('::exec()', function () {
           it('should insert a document', function () {
             return db.exec({
               query: 'INSERT INTO OUser SET name = "charles", status = "ACTIVE", password = "no"'
             })
             .then(response => {
               response['@type'].should.equal('orient:Collection');
-              response['@value'].length.should.be.above(0);
-              response['@value'].forEach(result => {
+              response.length.should.be.above(0);
+              response.forEach(result => {
                 result['@type'].should.equal('db:OUser');
                 Object.keys(result).length.should.be.above(1);
               });
@@ -302,8 +301,8 @@ function run (transportName) {
             })
             .then(response => {
               response['@type'].should.equal('orient:Collection');
-              response['@value'].length.should.equal(1);
-              response['@value'][0].should.equal(1);
+              response.length.should.equal(1);
+              response[0].should.equal(1);
             });
           });
 
@@ -313,19 +312,19 @@ function run (transportName) {
             })
             .then(response => {
               response['@type'].should.equal('orient:Collection');
-              response['@value'].length.should.equal(1);
-              response['@value'][0].should.equal(1);
+              response.length.should.equal(1);
+              response[0].should.equal(1);
             });
           });
         });
 
-        describe('script()', function () {
+        describe('::script()', function () {
           it('should execute some javascript', function () {
             return db.script('Javascript', `123;`)
             .then(response => {
               response['@type'].should.equal('orient:Collection');
-              response['@value'].length.should.equal(1);
-              response['@value'][0].should.equal(123);
+              response.length.should.equal(1);
+              response[0].should.equal(123);
             });
           });
           it('should execute some SQL', function () {
@@ -337,20 +336,20 @@ function run (transportName) {
             `)
             .then(response => {
               response['@type'].should.equal('orient:Collection');
-              response['@value'].length.should.equal(1);
-              let edge = response['@value'][0];
+              response.length.should.equal(1);
+              let edge = response[0];
               edge['@type'].should.equal('db:E');
               edge.foo.should.equal('bar');
               // @fixme when classes are supported properly
-              //edge['@value'].in.should.be.an.instanceOf(RID);
-              //edge['@value'].out.should.be.an.instanceOf(RID);
+              //edge.in.should.be.an.instanceOf(RID);
+              //edge.out.should.be.an.instanceOf(RID);
             });
           });
         });
       });
 
 
-      describe('dropDatabase()', function () {
+      describe('::dropDatabase()', function () {
         it('should drop a database', function () {
           return server.dropDatabase('test_'+transportName+'_transport', 'memory')
           .then(response => {

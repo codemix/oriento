@@ -1,5 +1,10 @@
 import RID from './rid';
 
+/**
+ * # Link Map
+ *
+ * Represents a map of (string) keys to RIDs in a document.
+ */
 export default class LinkMap extends Map {
   /**
    * Add an item to the map.

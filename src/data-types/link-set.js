@@ -1,5 +1,10 @@
 import RID from './rid';
 
+/**
+ * # Link Set
+ *
+ * Represents a set of RIDs in a document.
+ */
 export default class LinkSet extends Set {
   /**
    * Add an item to the set.

@@ -1,4 +1,4 @@
-import {RID} from "../../../data-types";
+import {Collection, RID} from "../../../data-types";
 
 
 export default function create (options) {
@@ -544,7 +544,9 @@ export default function create (options) {
           }
         })
         .collect(function (data) {
-          if (data['@type'] === 'orient:FlatRecord') {
+          if (data['@type'] === 'orient:FlatRecord' ||
+              data['@type'] === 'orient:Collection'
+          ) {
             return data['@value'];
           }
           return {
@@ -561,25 +563,18 @@ export default function create (options) {
           data.results[0]['@type'] === 'orient:Record' &&
           data.results[0]['@value']
         ) {
-          return {
-            '@type': 'orient:Collection',
-            '@value': [data.results[0]['@value']]
-          };
+          return new Collection([data.results[0]['@value']]);
         }
         else if (data.results.length === 1) {
-          return {
-            '@type': 'orient:Collection',
-            '@value': data.results
-          };
+          return new Collection(data.results);
         }
         else {
           return {
             '@type': 'orient:ResultSet',
             '@graph': data.results.reduce((results, item) => {
               if (item['@type'] === 'orient:Collection') {
-                results.push(item);
-                results.push(...item['@value']);
-                item['@value'] = item['@value'].map(item => item['@rid']);
+                results.push(new Collection(item.map(item => item['@rid'])));
+                results.push(...item);
               }
               else if (item['@type'] === 'orient:Prefetched') {
                 results.push(item['@value']);

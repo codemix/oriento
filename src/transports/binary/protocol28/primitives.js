@@ -1,5 +1,5 @@
 import {RequestError} from "../../../errors";
-import {RID} from "../../../data-types";
+import {RID, Collection} from "../../../data-types";
 
 
 export default function create (options) {
@@ -319,7 +319,7 @@ export default function create (options) {
   }
 
   function popStackCollection (data) {
-    return data.items;
+    return new Collection(data.items);
   }
 
 

@@ -24,7 +24,7 @@ describe('Document', function () {
     });
   });
 
-  describe('toJSON()', function () {
+  describe('::toJSON()', function () {
     it('should stringify a document', function () {
       let doc = new Document({
         '@type': 'd',

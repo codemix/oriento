@@ -1,3 +1,8 @@
+/**
+ * # Embedded Map
+ *
+ * Represents a map of (string) keys to values in a document.
+ */
 export default class EmbeddedMap extends Map {
 
   /**

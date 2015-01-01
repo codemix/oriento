@@ -1,4 +1,5 @@
 import {
+  Collection,
   Document,
   RID,
   EmbeddedMap,
@@ -153,16 +154,12 @@ export default function create (options) {
       return input;
     }
     let records = [];
-    let collection = {
-      '@type': 'orient:Collection',
-      '@value': flatten(input.result, records, {})
-    };
+    let collection = new Collection(flatten(input.result, records, {}));
     if (records.length === 0) {
       return collection;
     }
-    else if (records.length === collection['@value'].length) {
-      collection['@value'] = records;
-      return collection;
+    else if (records.length === collection.length) {
+      return new Collection(records);
     }
     else {
       return {

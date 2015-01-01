@@ -1,3 +1,8 @@
+/**
+ * # Embedded Set
+ *
+ * Represents a set of values in a document.
+ */
 export default class EmbeddedSet extends Set {
 
   /**

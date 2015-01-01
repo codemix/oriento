@@ -1,4 +1,14 @@
+/**
+ * # Document
+ *
+ * Used to represent documents returned from OrientDB.
+ * Documents are simple objects, documents can contain other documents.
+ */
 export default class Document {
+  /**
+   * Construct the document.
+   * @param  {Object} input The plain object representing the document.
+   */
   constructor (input) {
     if (input) {
       let keys = Object.keys(input);
@@ -23,6 +33,10 @@ export default class Document {
     }
   }
 
+  /**
+   * Get a representation of the document which can be encoded as JSON.
+   * @return {Object} The JSON encodable object.
+   */
   toJSON () {
     let value = {};
     let keys = Object.keys(this);
