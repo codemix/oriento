@@ -1,4 +1,4 @@
-import {Collection, RID} from "../../../data-types";
+import {Collection, ResultSet, RID} from "../../../data-types";
 
 
 export default function create (options) {
@@ -569,9 +569,7 @@ export default function create (options) {
           return new Collection(data.results);
         }
         else {
-          return {
-            '@type': 'orient:ResultSet',
-            '@graph': data.results.reduce((results, item) => {
+          return new ResultSet(data.results.reduce((results, item) => {
               if (item['@type'] === 'orient:Collection') {
                 results.push(new Collection(item.map(item => item['@rid'])));
                 results.push(...item);
@@ -583,8 +581,9 @@ export default function create (options) {
                 results.push(item);
               }
               return results;
-            }, [])
-          };
+            },
+            []
+          ));
         }
       });
     }

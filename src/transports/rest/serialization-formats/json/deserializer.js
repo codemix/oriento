@@ -1,11 +1,12 @@
 import {
   Collection,
   Document,
-  RID,
   EmbeddedMap,
   EmbeddedSet,
   LinkMap,
-  LinkSet
+  LinkSet,
+  ResultSet,
+  RID
 } from "../../../../data-types";
 
 export default function create (options) {
@@ -162,10 +163,7 @@ export default function create (options) {
       return new Collection(records);
     }
     else {
-      return {
-        '@type': 'orient:ResultSet',
-        '@graph': [collection].concat(records)
-      };
+      return new ResultSet([collection].concat(records));
     }
   }
 

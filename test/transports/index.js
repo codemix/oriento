@@ -186,8 +186,8 @@ function run (transportName) {
               fetchPlan: 'roles:1'
             })
             .then(response => {
-              response['@graph'].length.should.be.above(0);
-              response['@graph'].forEach((result, i) => {
+              response.length.should.be.above(0);
+              response.forEach((result, i) => {
                 if (i === 0) {
                   result['@type'].should.equal('orient:Collection');
                   result.length.should.be.above(0);
@@ -215,8 +215,8 @@ function run (transportName) {
             })
             .then(response => {
               response['@type'].should.equal('orient:ResultSet');
-              response['@graph'].length.should.equal(4);
-              response['@graph'][0]['@type'].should.equal('orient:Collection');
+              response.length.should.equal(4);
+              response[0]['@type'].should.equal('orient:Collection');
             });
           });
 
