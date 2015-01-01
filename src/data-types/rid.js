@@ -141,7 +141,7 @@ class RID {
    * Parse a record id into a RID object.
    *
    * @param  {String|Array|Object}          input The input to parse.
-   * @return {RID|RID[]|Boolean}        The parsed RID instance(s)
+   * @return {RID|RID[]|Boolean}                  The parsed RID instance(s)
    *                                              or false if the record id could not be parsed
    */
   static parse (input) {

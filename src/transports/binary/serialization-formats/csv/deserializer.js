@@ -1,4 +1,12 @@
-import {RID, RIDBag, EmbeddedSet, LinkSet} from "../../../../data-types";
+import {
+  Document,
+  RID,
+  RIDBag,
+  EmbeddedMap,
+  EmbeddedSet,
+  LinkMap,
+  LinkSet
+} from "../../../../data-types";
 
 export default function create (options) {
 
@@ -19,8 +27,7 @@ export default function create (options) {
       return eatValue(input)[0];
     }
 
-    var record = {},
-        chunk, key, value;
+    var record, chunk, key, value;
     chunk = eatFirstKey(input);
     if (chunk[2]) {
       // this is actually a class name
@@ -29,7 +36,9 @@ export default function create (options) {
         record = new classes[chunk[0]]; /* jshint ignore: line */
       }
       else {
-        record['@class'] = chunk[0];
+        record = new Document({
+          '@class': chunk[0]
+        });
       }
       input = chunk[1];
       chunk = eatKey(input);
@@ -37,6 +46,7 @@ export default function create (options) {
       input = chunk[1];
     }
     else {
+      record = new Document();
       key = chunk[0];
       input = chunk[1];
     }
@@ -362,8 +372,8 @@ export default function create (options) {
    * @return {[Object, String]}         The collected map, and any remaining input.
    */
   function eatMap (input) {
-    var map = {},
-        key, value, chunk, c;
+    var first = true,
+        map, key, value, chunk, c;
 
     while (input.length) {
       c = input.charAt(0);
@@ -386,14 +396,23 @@ export default function create (options) {
         chunk = eatValue(input);
         value = chunk[0];
         input = chunk[1];
-        map[key] = value;
       }
       else {
-        map[key] = null;
+        value = null;
       }
+      if (first) {
+        if (value instanceof RID) {
+          map = new LinkMap();
+        }
+        else {
+          map = new EmbeddedMap();
+        }
+        first = false;
+      }
+      map.set(key, value);
     }
 
-    return [map, input];
+    return [map || new EmbeddedMap(), input];
   }
 
   /**
@@ -403,8 +422,7 @@ export default function create (options) {
    * @return {[Object, String]}         The collected record, and any remaining input.
    */
   function eatRecord (input) {
-    var record = {},
-        chunk, c, key, value;
+    var record, chunk, c, key, value;
 
     while (input.length) {
       c = input.charAt(0);
@@ -415,7 +433,7 @@ export default function create (options) {
       else if (c === ')') {
         // empty record.
         input = input.slice(1);
-        return [record, input];
+        return [new Document(), input];
       }
       else {
         break;
@@ -426,7 +444,15 @@ export default function create (options) {
 
     if (chunk[2]) {
       // this is actually a class name
-      record['@class'] = chunk[0];
+      // see if we have the class in the list of registered classes.
+      if (classes[chunk[0]]) {
+        record = new classes[chunk[0]]; /* jshint ignore: line */
+      }
+      else {
+        record = new Document({
+          '@class': chunk[0]
+        });
+      }
       input = chunk[1];
       chunk = eatKey(input);
       while (input.length) {
@@ -448,6 +474,7 @@ export default function create (options) {
       input = chunk[1];
     }
     else {
+      record = new Document();
       key = chunk[0];
       input = chunk[1];
     }
@@ -456,7 +483,9 @@ export default function create (options) {
     chunk = eatValue(input);
     value = chunk[0];
     input = chunk[1];
-    record[key] = value;
+    if (key !== '@type') {
+      record[key] = value;
+    }
 
     while (input.length) {
       c = input.charAt(0);
@@ -478,10 +507,12 @@ export default function create (options) {
         chunk = eatValue(input);
         value = chunk[0];
         input = chunk[1];
-        record[key] = value;
       }
       else {
-        record[key] = null;
+        value = null;
+      }
+      if (key !== '@type') {
+        record[key] = value;
       }
     }
 

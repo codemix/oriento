@@ -1,6 +1,6 @@
 import Bluebird from 'bluebird';
 import Transports from '../../src/transports';
-import {RID} from '../../src/data-types';
+import {Document, RID} from '../../src/data-types';
 import {RequestError, NotImplementedError} from '../../src/errors';
 
 
@@ -34,7 +34,7 @@ function run (transportName) {
         it('should list the databases on the server', function () {
           return server.listDatabases()
           .then(response => {
-            response.should.have.property('test_'+transportName+'_transport');
+            response.indexOf('test_'+transportName+'_transport').should.be.above(-1);
           });
         });
       });
@@ -140,6 +140,7 @@ function run (transportName) {
                 dateTime = "2012-08-13 14:00:00",\
                 string = "hello world",\
                 link = #5:0,\
+                schemalessLink = #5:1,\
                 linkList = [#5:0,#5:1],\
                 linkMap = {"admin":#5:0,"reader":#5:1},\
                 linkSet = [#5:0,#5:1],\
@@ -161,7 +162,7 @@ function run (transportName) {
               query: 'SELECT COUNT(*) FROM OUser'
             })
             .then(response => {
-              response['@value'][0]['@value'].COUNT.should.be.above(0);
+              response['@value'][0].COUNT.should.be.above(0);
             });
           });
 
@@ -170,11 +171,12 @@ function run (transportName) {
               query: 'SELECT FROM OUser'
             })
             .then(response => {
+              //console.log(JSON.stringify(response, null, 2));
               response['@type'].should.equal('orient:Collection');
               response['@value'].length.should.be.above(0);
               response['@value'].forEach(result => {
                 result['@type'].should.equal('db:OUser');
-                Object.keys(result['@value']).length.should.be.above(0);
+                Object.keys(result).length.should.be.above(0);
               });
             });
           });
@@ -195,10 +197,10 @@ function run (transportName) {
                   });
                 }
                 else if (result['@type'] === 'db:OUser') {
-                  Object.keys(result['@value']).length.should.be.above(0);
+                  Object.keys(result).length.should.be.above(0);
                 }
                 else if (result['@type'] === 'db:ORole') {
-                  Object.keys(result['@value']).length.should.be.above(0);
+                  Object.keys(result).length.should.be.above(0);
                 }
                 else {
                   throw new Error('Should never happen');
@@ -225,7 +227,8 @@ function run (transportName) {
             })
             .then(response => {
               response['@type'].should.equal('orient:Collection');
-              let record = response['@value'][0]['@value'];
+              let record = response['@value'][0];
+              //console.log(record);
               record.name.should.equal('test');
               record.boolean.should.equal(true);
               record.integer.should.equal(123);
@@ -237,17 +240,42 @@ function run (transportName) {
               record.dateTime.should.eql(new Date(Date.UTC(2012,7,13, 14)));
               record.string.should.equal("hello world");
 
+              record.linkMap.toObject().should.eql({"admin": RID("#5:0"),"reader": RID("#5:1")});
+              record.embedded.should.have.properties({
+                "@type":"db:Location",
+                "address":"123 Fake Street"
+              });
+              record.embeddedMap.toObject().foo.should.have.properties({
+                "@type": "db:Location",
+                "address":"123 Fake Street"
+              });
+              let items = record.embeddedSet.toArray().sort((a, b) => {
+                if (a.address > b.address) {
+                  return 1;
+                }
+                else if (a.address < b.address) {
+                  return -1;
+                }
+                else {
+                  return 0;
+                }
+              });
+
+              items[0].should.have.properties({
+                  "@type":"db:Location",
+                  "address":"123 Fake Street"
+              });
+              items[1].should.have.properties({
+                "@type":"db:Location",
+                "address":"456 Letsbe Avenue"
+              });
               // @fixme when class support is dealt with properly
               //console.log(typeof record.link, record.link);
+              // record.schemalessLink.equals("#5:1").should.be.true;
               //record.link.equals("#5:0").should.be.true;
               /*record.linkList.should.equal([#5:0,#5:1]);
-              record.linkMap.should.equal({"admin":#5:0,"reader":#5:1});
               record.linkSet.should.equal([#5:0,#5:1]);
-              record.embedded.should.equal({"@type":"d","@class":"Location","address":"123 Fake Street"});
-              embeddedList.should.equal([{"@type":"d","@class":"Location","address":"123 Fake Street"},{"@type":"d","@class":"record.Location","address":"456 Letsbe Avenue"}]);
-              record.embeddedMap.should.equal({"foo":{"@type":"d","@class":"Location","address":"123 Fake Street"}});
-              record.embeddedSet.should.equal([{"@type":"d","@class":"Location","address":"123 Fake Street"},{"@type":"d","@class":"Location","address":"456 Letsbe Avenue"});*/
-              //console.log(JSON.stringify(response, null, 2));
+              embeddedList.should.equal([{"@type":"d","@class":"Location","address":"123 Fake Street"},{"@type":"d","@class":"record.Location","address":"456 Letsbe Avenue"}]);*/
             });
           });
 
@@ -263,7 +291,7 @@ function run (transportName) {
               response['@value'].length.should.be.above(0);
               response['@value'].forEach(result => {
                 result['@type'].should.equal('db:OUser');
-                Object.keys(result['@value']).length.should.be.above(0);
+                Object.keys(result).length.should.be.above(1);
               });
             });
           });
@@ -275,7 +303,7 @@ function run (transportName) {
             .then(response => {
               response['@type'].should.equal('orient:Collection');
               response['@value'].length.should.equal(1);
-              response['@value'][0]['@value'].should.equal(1);
+              response['@value'][0].should.equal(1);
             });
           });
 
@@ -286,7 +314,7 @@ function run (transportName) {
             .then(response => {
               response['@type'].should.equal('orient:Collection');
               response['@value'].length.should.equal(1);
-              response['@value'][0]['@value'].should.equal(1);
+              response['@value'][0].should.equal(1);
             });
           });
         });
@@ -297,7 +325,7 @@ function run (transportName) {
             .then(response => {
               response['@type'].should.equal('orient:Collection');
               response['@value'].length.should.equal(1);
-              response['@value'][0]['@value'].should.equal(123);
+              response['@value'][0].should.equal(123);
             });
           });
           it('should execute some SQL', function () {
@@ -312,7 +340,8 @@ function run (transportName) {
               response['@value'].length.should.equal(1);
               let edge = response['@value'][0];
               edge['@type'].should.equal('db:E');
-              edge['@value'].foo.should.equal('bar');
+              edge.foo.should.equal('bar');
+              // @fixme when classes are supported properly
               //edge['@value'].in.should.be.an.instanceOf(RID);
               //edge['@value'].out.should.be.an.instanceOf(RID);
             });

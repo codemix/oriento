@@ -180,26 +180,7 @@ export default function create (options) {
       .Header('header')
       .Object('databases')
       .collect(function (data) {
-        var items = data.databases.databases,
-            names = Object.keys(items),
-            length = names.length,
-            matches, name, i;
-        for (i = 0; i < length; i++) {
-          name = names[i];
-          if ((matches = items[name].match(/^(\w+):(.*)/))) {
-            items[name] = {
-              name: name,
-              storage: matches[1],
-              location: matches[2]
-            };
-          }
-          else {
-            items[name] = {
-              name: name
-            };
-          }
-        }
-        return items;
+        return Object.keys(data.databases.databases.toObject());
       });
     }
   };

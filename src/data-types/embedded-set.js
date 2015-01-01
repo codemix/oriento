@@ -1,16 +1,25 @@
 export default class EmbeddedSet extends Set {
+
+  /**
+   * Return an array of values in the set.
+   * @return {Array} The values.
+   */
+  toArray () {
+    let items = [];
+    for (let rid of this.values()) {
+      items.push(rid);
+    }
+    return items;
+  }
+
   /**
    * Return a representation of the set which can be safely encoded as JSON.
    * @return {Object} The JSON encodable object.
    */
   toJSON () {
-    let items = [];
-    for (let item of this.values()) {
-      items.push(item);
-    }
     return {
       '@type': 'orient:EmbeddedSet',
-      '@value': items
+      '@value': this.toArray()
     };
   }
 }

@@ -300,8 +300,8 @@ function fetchMetadata (transport, clusters) {
     transport.query('SELECT FROM #0:2')
   ])
   .then(response => {
-    let schema = response[0]['@value'][0]['@value'].classes;
-    let indices = response[1]['@value'][0]['@value'].indexes;
+    let schema = response[0]['@value'][0].classes;
+    let indices = response[1]['@value'][0].indexes;
     transport.emit('metadata', normalizeSchema(schema, clusters, indices));
   });
 }

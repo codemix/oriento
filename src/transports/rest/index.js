@@ -51,12 +51,7 @@ class RESTTransport extends AbstractTransport {
       url: 'listDatabases',
       method: 'GET'
     })
-    .then(response => response['@value'].databases.reduce((dbs, name) => {
-      dbs[name] = {
-        name: name
-      };
-      return dbs;
-    }, {}));
+    .then(response => response.databases);
   }
 
   /**
@@ -351,8 +346,8 @@ function normalizeIndex (input) {
   return {
     '@type': 'orient:Index',
     name: input.name,
-    type: input.configuration['@value'].type,
-    className: input.configuration['@value'].indexDefinition['@value'].className,
-    propertyName: input.configuration['@value'].indexDefinition['@value'].field
+    type: input.configuration.type,
+    className: input.configuration.indexDefinition.className,
+    propertyName: input.configuration.indexDefinition.field
   };
 }

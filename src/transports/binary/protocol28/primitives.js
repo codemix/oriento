@@ -260,21 +260,23 @@ export default function create (options) {
       .tap(tapNormalRecord)
       .popStack('@value')
       .collect(data => {
-        if (data['@value']['@value'] && data['@value']['@value']['@class']) {
-          data['@value']['@type'] = 'db:'+data['@value']['@value']['@class'];
-          delete data['@value']['@value']['@class'];
+        let item = data['@value'];
+        switch (item['@type']) {
+          case 'd':
+            item['@type'] = 'orient:Document';
+            break;
+          case 'f':
+            return item['@value'];
+        }
+        if (item['@value']) {
+          let record = item['@value'];
+          record['@rid'] = item['@rid'];
+          record['@version'] = item['@version'];
+          return record;
         }
         else {
-          switch (data['@value']['@type']) {
-            case 'd':
-              data['@value']['@type'] = 'orient:Document';
-              break;
-            case 'f':
-              data['@value']['@type'] = 'orient:FlatRecord';
-              break;
-          }
+          return item;
         }
-        return data['@value'];
       });
     }
   }

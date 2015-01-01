@@ -1,5 +1,5 @@
 import {create} from "../../../../src/transports/binary/serialization-formats/csv";
-import {RID} from "../../../../src/data-types";
+import {Document, RID} from "../../../../src/data-types";
 
 class OClass {
   constructor (options = {}) {
@@ -29,7 +29,7 @@ describe('Serialization Format: CSV', function () {
   });
   describe('integration tests', function () {
     it('should serialize / deserialize a record', function () {
-      let input = {
+      let input = new Document({
         string: "hello",
         /*rid: new RID('#12:10'), */
         date: new Date("2010-10-24"),
@@ -38,7 +38,7 @@ describe('Serialization Format: CSV', function () {
         true: true,
         false: false,
         null: null
-      };
+      });
       deserialize(serialize(input)).should.eql(input);
     });
     it('should serialize a simple record', function () {
@@ -46,9 +46,9 @@ describe('Serialization Format: CSV', function () {
     });
 
     it('should deserialize a simple record', function () {
-      deserialize('foo:"bar"').should.eql({
+      deserialize('foo:"bar"').should.eql(new Document({
         foo: 'bar'
-      });
+      }));
     });
 
   });

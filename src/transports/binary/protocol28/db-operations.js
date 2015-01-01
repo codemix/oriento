@@ -544,6 +544,9 @@ export default function create (options) {
           }
         })
         .collect(function (data) {
+          if (data['@type'] === 'orient:FlatRecord') {
+            return data['@value'];
+          }
           return {
             '@type': data['@type'],
             '@value': data['@value']
