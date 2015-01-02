@@ -1,0 +1,6 @@
+--harmony
+--recursive
+--reporter=spec
+--require=6to5/register
+--require=should
+--require=expect.js
