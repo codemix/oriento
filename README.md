@@ -1,3 +1,6 @@
+# NOTE: Oriento is deprecated, development continues at https://github.com/orientechnologies/orientjs
+
+
 # Oriento
 
 Official [orientdb](http://www.orientechnologies.com/orientdb/) driver for node.js. Fast, lightweight, uses the binary protocol.
